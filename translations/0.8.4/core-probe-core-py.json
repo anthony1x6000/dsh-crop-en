@@ -1,0 +1,988 @@
+{
+  "upstream": "0.8.4",
+  "file": "core/probe_core.py",
+  "lang": "py",
+  "sourceSha256": "9bc2395ac748325146932324bc8e3124e578937ec542d3b50557726dd4ec6e1b",
+  "entries": [
+    [
+      "end 提交收尾：工作进入 pending_confirm，等人类确认才真正关闭。",
+      "end submits the wrap-up: the work moves to pending_confirm and closes only after human confirmation."
+    ],
+    [
+      "已提交收尾、等人类确认的工作（不参与认领，只用于提醒/面板）。",
+      "Works submitted for wrap-up and awaiting human confirmation (excluded from claims, used for reminders/panel only)."
+    ],
+    [
+      "人类确认收尾：批量关闭 pending_confirm 工作。",
+      "Human confirms wrap-up: close pending_confirm works in bulk."
+    ],
+    [
+      "phase=end requires what: 用一句话写这次做了什么（cost / next_time 可选）",
+      "phase=end requires what: one sentence on what you did this time (cost / next_time optional)"
+    ],
+    [
+      "先拆任务或先交付一个可验证的阶段，别一口气拖到超时",
+      "Split the task or ship a verifiable stage first; do not drag it out to overtime in one go"
+    ],
+    [
+      "检查是否卡在循环里，或把重复动作换成一次性方案",
+      "Check whether you are stuck in a loop, or replace repeated actions with a one-shot plan"
+    ],
+    [
+      "被鞭策 {nudges} 次（{', '.join(tiers) or 'n/a'}）",
+      "Nudged {nudges} times ({', '.join(tiers) or 'n/a'})"
+    ],
+    [
+      "把这次的真实改进写进本次 end 的 improve，再调用 ",
+      "Write the real improvement into this end call's improve, then call "
+    ],
+    [
+      "note=..., work_id=...) 建档；建档后这条待复盘会自动关闭。",
+      "note=..., work_id=...) to file it; filing closes this pending-retro entry automatically."
+    ],
+    [
+      "Missing-report nudge; streaks of 2+ switch to the harsher pool.\n\n    With no live binding there is no work to补记: the situation is either the\n    post-end cool-down (交付/汇报动作) or a session that never bound, which the\n    binding hint already covers.  Nagging here was the \"上一轮没登记\" noise\n    (card 0f9927d4).\n    ",
+      "Missing-report nudge; streaks of 2+ switch to the harsher pool.\n\n    With no live binding there is no work to backfill: the situation is either the\n    post-end cooldown (delivery/report actions) or a session that never bound, which the\n    binding hint already covers.  Nagging here was the \"last turn went unlogged\" noise\n    (card 0f9927d4).\n    "
+    ],
+    [
+      "[crop] 上一轮跑了挺久但没有登记。如果这个工作有进展或卡点，调 crop_update 写一行。",
+      "[crop] The last turn ran a while without being logged. If this work moved or hit a blocker, call crop_update with one line."
+    ],
+    [
+      "待确认收尾的工作：首轮提醒一次；超过 30 分钟再提醒一次（不自动确认）。",
+      "Works awaiting wrap-up confirmation: remind once, then again after 30 minutes (never auto-confirm)."
+    ],
+    [
+      "[crop] 工作「{task_id}」已提交收尾，等待人类确认（crop_confirm）。",
+      "[crop] Work \"{task_id}\" is submitted for wrap-up, awaiting human confirmation (crop_confirm)."
+    ],
+    [
+      "确认前不计为完成、计时继续。",
+      " It does not count as done before confirmation, and the clock keeps running."
+    ],
+    [
+      "[crop] 工作「{task_id}」提交收尾已经 {minutes} 分钟，人类还没确认。",
+      "[crop] Work \"{task_id}\" has awaited wrap-up confirmation for {minutes} minutes."
+    ],
+    [
+      "再问用户一句：这个工作确认收尾了吗？要收尾就调 crop_confirm。",
+      " Ask the user once more: is this work confirmed as wrapped up? If so, call crop_confirm."
+    ],
+    [
+      "<短名>",
+      "<short-name>"
+    ],
+    [
+      "上一件工作",
+      "the last work"
+    ],
+    [
+      "[crop] 上一件工作（{work_id}）已经收尾，当前没有绑定。",
+      "[crop] The last work ({work_id}) is wrapped up; nothing is bound right now."
+    ],
+    [
+      "交付、汇报、截图这类收尾动作不用再绑；只是收尾追问就记 ",
+      " Delivery, report, and screenshot actions need no new binding; a wrap-up follow-up alone gets logged as "
+    ],
+    [
+      "category=\"side-issue\"；确实是新工作，再 crop_update(phase=\"start\", ",
+      "category=\"side-issue\"; if it is truly a new work, then crop_update(phase=\"start\", "
+    ],
+    [
+      "task_id=\"<短名>\", summary=\"<一句话>\", expect_min=预估分钟)。",
+      "task_id=\"<short-name>\", summary=\"<one sentence>\", expect_min=<minutes>)."
+    ],
+    [
+      "[crop] 你已经在调用工具，但还没有绑定任何工作。先调 crop_update(phase=\"start\", ",
+      "[crop] You are already calling tools but have not bound any work. First call crop_update(phase=\"start\", "
+    ],
+    [
+      "task_id=\"<2-3 个词的短名>\", summary=\"<一句话>\", expect_min=预估分钟) 再继续，",
+      "task_id=\"<2-3 word short name>\", summary=\"<one sentence>\", expect_min=<minutes>), then continue; "
+    ],
+    [
+      "这样这段时间才有归属；顺手报个预期时长，鞭子就按你的数字算。",
+      "only then does this time belong to something. Report an expected duration too; the whip follows your number."
+    ],
+    [
+      "[crop] 已经 {fmt_minutes(minutes)}",
+      "[crop] {fmt_minutes(minutes)} in"
+    ],
+    [
+      "，你报的是 {fmt_minutes(float(expect))}",
+      ", you estimated {fmt_minutes(float(expect))}"
+    ],
+    [
+      "顺手 crop_update 写一行：在做什么 / 卡在哪 / 下一步。",
+      "While you are at it, crop_update one line: what you are doing / where you are stuck / next step."
+    ],
+    [
+      "{header}。\\n",
+      "{header}.\\n"
+    ],
+    [
+      "别一个人硬扛：卡住的地方随时可以问我，也可以先说说你打算怎么试，我们一起看。\\n",
+      "Do not grind alone: ask me whenever you are stuck, or tell me how you plan to try it and we will look together.\\n"
+    ],
+    [
+      "要不要先拆一下？先把最小可验证的一步做出来，再回头补剩下的。\\n",
+      "Want to split it first? Ship the smallest verifiable step, then come back for the rest.\\n"
+    ],
+    [
+      "黄线",
+      "yellow line"
+    ],
+    [
+      "红线",
+      "red line"
+    ],
+    [
+      "Duration in the copy's voice ('3 小时 30 分'); plain fallback without pools.",
+      "Duration in the copy's voice ('3 h 30 m'); plain fallback without pools."
+    ],
+    [
+      "0 分钟",
+      "0 min"
+    ],
+    [
+      "{value} 分钟",
+      "{value} min"
+    ],
+    [
+      "{hours} 小时",
+      "{hours} h"
+    ],
+    [
+      "{hours} 小时 {rest} 分",
+      "{hours} h {rest} min"
+    ],
+    [
+      "未知",
+      "unknown"
+    ],
+    [
+      "{minutes} 分钟前",
+      "{minutes} min ago"
+    ],
+    [
+      "{minutes // 60} 小时前",
+      "{minutes // 60} h ago"
+    ],
+    [
+      "说话方式：跟用户像同事吐槽，短句 + 自嘲，别客服腔；卡住或超时先自嘲一句，",
+      "Tone: talk to the user like a coworker venting, short sentences + self-deprecation, no support-bot voice; when stuck or overtime, mock yourself first,"
+    ],
+    [
+      "再说真实原因和下一步。梗是包装，技术结论、代码、风险提示照常严谨。",
+      " then state the real cause and next step. Jokes are packaging; technical conclusions, code, and risk warnings stay rigorous."
+    ],
+    [
+      "绑定后先报预期（不阻断，但必须报）：crop_update 带 expect_min=多少分钟 + expect_why=一句为什么。",
+      "Report an estimate after binding (not blocking, but mandatory): crop_update with expect_min=<minutes> + expect_why=<one-line why>."
+    ],
+    [
+      "提醒按你报的数字算——在你报的时长内不会有人抽鞭子；觉得报少了，就带着理由改。",
+      " Reminders count against your number — nobody cracks the whip inside your estimate; if you underbid, revise it with a reason."
+    ],
+    [
+      "(本会话的未完成工作数, 其他会话的未完成工作数)。",
+      "(open works in this session, open works in other sessions)."
+    ],
+    [
+      "Task rows + the \"另有 N 条\" tail, without the title line.",
+      "Task rows + the \"N more\" tail, without the title line."
+    ],
+    [
+      "（{ago(task.get('last_seen_at', 0))}）",
+      " ({ago(task.get('last_seen_at', 0))})"
+    ],
+    [
+      "另有 {extra} 条，用 crop_works 查看或筛选。",
+      "{extra} more, use crop_works to view or filter."
+    ],
+    [
+      "Unbound session: one imperative action first, then at most three candidates.\n\n    本会话 / 其他会话分开数，别把全局待办当成“本会话的活”（card 9da932ed）。\n    用户模板 ``start-hint`` 存在时替换整段（变量见 docs/DESIGN-CUSTOM-TEMPLATES.md）。\n    ",
+      "Unbound session: one imperative action first, then at most three candidates.\n\n    Count this session / other sessions separately; do not treat the global backlog as work for this session (card 9da932ed).\n    A user template ``start-hint`` replaces the whole block (variables in docs/DESIGN-CUSTOM-TEMPLATES.md).\n    "
+    ],
+    [
+      "[crop] 本会话还没有绑定工作；其他会话有 {others or count} 条在跑。候选（最多 3 条）：",
+      "[crop] This session has no work bound yet; other sessions have {others or count} running. Candidates (up to 3):"
+    ],
+    [
+      "[crop] 未完成的工作：本会话 {mine} 条 / 其他会话 {others} 条。最近活跃的是：",
+      "[crop] Open works: {mine} in this session / {others} in other sessions. Most recently active:"
+    ],
+    [
+      "[crop] 未完成的工作有 {count} 条，最近活跃的是：",
+      "[crop] Open works: {count}. Most recently active:"
+    ],
+    [
+      "先选一条，再动手：接着做用 ",
+      "Pick one before acting: to continue, use "
+    ],
+    [
+      "crop_update(phase=\"start\", task_id=\"{example}\")；新开用 2-3 个词的短名。",
+      "crop_update(phase=\"start\", task_id=\"{example}\"); to start fresh, use a 2-3 word short name."
+    ],
+    [
+      "[crop] 本机当前没有进行中的工作。新开一条：",
+      "[crop] No work is in progress on this machine. Start one:"
+    ],
+    [
+      "crop_update(phase=\\\"start\\\", task_id=\\\"<短名>\\\", summary=\\\"<一句话>\\\", ",
+      " crop_update(phase=\\\"start\\\", task_id=\\\"<short-name>\\\", summary=\\\"<one sentence>\\\", "
+    ],
+    [
+      "expect_min=预估分钟, expect_why=\\\"一句为什么\\\")。",
+      "expect_min=<minutes>, expect_why=\\\"<one-line why>\\\")."
+    ],
+    [
+      "提醒按你报的时长算：在你自己报的范围内不会被打扰。",
+      " Reminders count against your estimate: inside your own number nobody bothers you."
+    ],
+    [
+      "尽量让一个会话只对应一件工作；要做的其实是几件事就拆开，一件一件来。",
+      "Keep one session to one work; if it is really several, split it and take them one at a time."
+    ],
+    [
+      "[crop] 红线告警：这一轮已经 {minutes:.0f} 分钟（红线 {float(config['red_min']):.0f}），用户等了很久还没拿到结果。",
+      "[crop] Red line: this turn is at {minutes:.0f} minutes (red line {float(config['red_min']):.0f}); the user has waited a long time without a result."
+    ],
+    [
+      "先别急着继续，确认三件事：",
+      "Stop and confirm three things:"
+    ],
+    [
+      "1. 还走在正确的路上吗？有没有更快的路径？",
+      "1. Are you still on the right path? Is there a faster route?"
+    ],
+    [
+      "2. 能不能先给用户一个阶段性交付？",
+      "2. Can you hand the user a staged deliverable first?"
+    ],
+    [
+      "3. 安抚用户，并把判断写进 crop_update（cause + verdict）。",
+      "3. Reassure the user and write the judgment into crop_update (cause + verdict)."
+    ],
+    [
+      "请做两件事：",
+      "Then do two things:"
+    ],
+    [
+      "1. 对用户说一句简短的人话，例如：不好意思，这个做得有点久，我还在处理，",
+      "1. Say one short human sentence to the user, e.g.: sorry, this is taking a while, I am still on it,"
+    ],
+    [
+      "后面会把这段记下来优化。",
+      " and I will log this stretch for improvement."
+    ],
+    [
+      "2. 调用 crop_update：phase=\"blocked\" 或 \"progress\"，task_id=\"...\", ",
+      "2. Call crop_update: phase=\"blocked\" or \"progress\", task_id=\"...\", "
+    ],
+    [
+      "summary=\"现在在做什么\", cause=\"为什么慢\", next=\"下一步\", ",
+      "summary=\"what you are doing now\", cause=\"why it is slow\", next=\"next step\", "
+    ],
+    [
+      "tool-misuse|no-evidence|spec-drift|human-wait|other\"。",
+      "tool-misuse|no-evidence|spec-drift|human-wait|other\"."
+    ],
+    [
+      "1. 调用 crop_update：phase=\"blocked\" 或 \"progress\"，task_id=\"...\", ",
+      "1. Call crop_update: phase=\"blocked\" or \"progress\", task_id=\"...\", "
+    ],
+    [
+      "summary=\"现在在做什么\", cause=\"为什么慢\", next=\"下一步\", category=\"...\"。",
+      "summary=\"what you are doing now\", cause=\"why it is slow\", next=\"next step\", category=\"...\"."
+    ],
+    [
+      "Local midnight — the dashboard's「今天」and natural-day windows start here.",
+      "Local midnight — the dashboard's 'today' and natural-day windows start here."
+    ],
+    [
+      "Crop 状态 — {summary.get('host', 'unknown')}  ",
+      "Crop status — {summary.get('host', 'unknown')}  "
+    ],
+    [
+      "（超红线）",
+      " (over red line)"
+    ],
+    [
+      "当前任务块  {minutes:.0f} 分钟{flag} / 红线 {red:.0f}",
+      "Current block  {minutes:.0f} min{flag} / red line {red:.0f}"
+    ],
+    [
+      "当前任务块  空闲",
+      "Current block  idle"
+    ],
+    [
+      "其它 {extra}",
+      "other {extra}"
+    ],
+    [
+      "今日事件  {summary.get('today_events', 0)} 条",
+      "Today events  {summary.get('today_events', 0)}"
+    ],
+    [
+      "：",
+      ": "
+    ],
+    [
+      "、",
+      ", "
+    ],
+    [
+      "进行中的工作：",
+      "In progress:"
+    ],
+    [
+      "未记录",
+      "not recorded"
+    ],
+    [
+      "  - {task.get('task_id')} — {title}（下一步：{nxt}）",
+      "  - {task.get('task_id')} — {title} (next: {nxt})"
+    ],
+    [
+      "进行中的工作：无",
+      "In progress: none"
+    ],
+    [
+      "数据目录  {summary.get('data_dir', '')}",
+      "Data dir  {summary.get('data_dir', '')}"
+    ],
+    [
+      "This session's work: explicit claim first, else the single active work.\n\n    Several sessions can share a workspace, so \"the only active work\" is only a\n    safe fallback when there is exactly one. 块结束时用它自动归属时间。\n    ",
+      "This session's work: explicit claim first, else the single active work.\n\n    Several sessions can share a workspace, so \"the only active work\" is only a\n    safe fallback when there is exactly one. Used at block end to attribute time automatically.\n    "
+    ],
+    [
+      "[crop] 上一件工作（{bound_id}）已经收尾，本会话继续聊或交付都不用重新绑定；",
+      "[crop] The last work ({bound_id}) is wrapped up; keep chatting or delivering in this session without rebinding;"
+    ],
+    [
+      "确实是新工作，再 crop_update(phase=\\\"start\\\", task_id=\\\"<短名>\\\", summary=\\\"<一句话>\\\")。",
+      " if it is truly a new work, then crop_update(phase=\\\"start\\\", task_id=\\\"<short-name>\\\", summary=\\\"<one sentence>\\\")."
+    ],
+    [
+      "（上个会话认领，仍在有效期内）",
+      " (claimed by a previous session, still valid)"
+    ],
+    [
+      "已进行 {fmt_minutes(minutes)} / 你报的 {fmt_minutes(expect)}",
+      "Elapsed {fmt_minutes(minutes)} / you estimated {fmt_minutes(expect)}"
+    ],
+    [
+      "（超 {fmt_minutes(gap)}）",
+      " (over by {fmt_minutes(gap)})"
+    ],
+    [
+      "（还剩 {fmt_minutes(-gap)}）",
+      " ({fmt_minutes(-gap)} left)"
+    ],
+    [
+      "留意用户是否把话题岔到另一件事（分叉），或上一轮的产出是否被推翻（返工）；有变化就更新一行。",
+      "Watch for the user branching to another topic (fork) or last turn's output being overturned (rework); update one line when that changes."
+    ],
+    [
+      "已超过黄线",
+      "past the yellow line"
+    ],
+    [
+      "未超时",
+      "not overtime"
+    ],
+    [
+      "已进行 {fmt_minutes(minutes)}，{overtime}（黄线 {fmt_minutes(yellow)}）",
+      "Elapsed {fmt_minutes(minutes)}, {overtime} (yellow line {fmt_minutes(yellow)})"
+    ],
+    [
+      "还没报预期时长：开工或下次上报时给个数字（crop_update 带 expect_min），",
+      "No estimate reported yet: give a number at start or on the next report (crop_update with expect_min),"
+    ],
+    [
+      "鞭子就按你的数字算。留意分叉与返工；有变化就更新一行。",
+      " and the whip follows your number. Watch for forks and rework; update one line when that changes."
+    ],
+    [
+      "[crop] 当前工作：{aim}（{current.get('task_id')}）{note}。",
+      "[crop] Current work: {aim} ({current.get('task_id')}){note}."
+    ],
+    [
+      "{clock}；上次更新 {ago(current.get('last_seen_at', 0))}。{tail}",
+      " {clock}; last update {ago(current.get('last_seen_at', 0))}. {tail}"
+    ],
+    [
+      "Works finished in [start, end]: the dashboard's 完成工作.",
+      "Works finished in [start, end]: the dashboard's completed works."
+    ],
+    [
+      "One row per work for the dashboard table: 灯点 / 工作 / 类型 / 活跃 / 等待.",
+      "One row per work for the dashboard table: lamp / work / type / active / waiting."
+    ],
+    [
+      "Range totals for the dashboard and the text report.\n\n    `start` pins a natural-day window (the dashboard's 今天 / 7 天 / 30 天);\n    without it the window stays rolling, which is what the CLI report uses.\n    ",
+      "Range totals for the dashboard and the text report.\n\n    `start` pins a natural-day window (the dashboard's today / 7 days / 30 days);\n    without it the window stays rolling, which is what the CLI report uses.\n    "
+    ],
+    [
+      "Crop 周报（近 {days:g} 天）",
+      "Crop weekly report (last {days:g} days)"
+    ],
+    [
+      "这 {days:g} 天里，一共 {summary.get('blocks', 0)} 个回合、{round(total)} 分钟，",
+      "Across the last {days:g} days: {summary.get('blocks', 0)} turns, {round(total)} minutes,"
+    ],
+    [
+      "涉及 {len(summary.get('works') or [])} 个工作。",
+      " across {len(summary.get('works') or [])} works."
+    ],
+    [
+      "最花时间的工作：",
+      "Most time-consuming works:"
+    ],
+    [
+      "  - {goal}（{round(item['minutes'])} 分钟，类型 {item.get('type') or '未标'}）",
+      "  - {goal} ({round(item['minutes'])} min, type {item.get('type') or 'untyped'})"
+    ],
+    [
+      "其中等你回话 {wait_min:.0f} 分钟，有 {summary.get('idle_gaps', 0)} 次长时间离开。",
+      "Of that, {wait_min:.0f} min waiting on your reply, with {summary.get('idle_gaps', 0)} long absences."
+    ],
+    [
+      "你的收尾小结：",
+      "Your wrap-up summaries:"
+    ],
+    [
+      "  - {item.get('what') or item.get('work_id')}；花在 {item.get('cost') or '未记'}；下次 {item.get('next_time') or '未记'}",
+      "  - {item.get('what') or item.get('work_id')}; spent on {item.get('cost') or 'unrecorded'}; next time {item.get('next_time') or 'unrecorded'}"
+    ],
+    [
+      "（以上为事实层，文字版由 Agent 任务改写。）",
+      "(Facts only; the prose version is rewritten by the agent task.)"
+    ],
+    [
+      "Natural-day window start: 今天 = 0 点，7 天 = 含今天在内的 7 个自然日。",
+      "Natural-day window start: today = midnight, 7 days = 7 natural days including today."
+    ],
+    [
+      "…",
+      "..."
+    ],
+    [
+      "{w.get('task_id')}（{ago(w.get('last_seen_at', 0))}）",
+      "{w.get('task_id')} ({ago(w.get('last_seen_at', 0))})"
+    ],
+    [
+      " 等 {len(works)} 条",
+      " and {len(works)} in total"
+    ],
+    [
+      "[crop] 有长期没动的工作待清退：{names}{more}。",
+      "[crop] Works idle for a long time are due for cleanup: {names}{more}."
+    ],
+    [
+      "问用户一句：这些还要继续吗？要继续 / 先挂起 / 确认清退。",
+      " Ask the user one question: keep any of these? continue / suspend first / confirm cleanup."
+    ],
+    [
+      "会话开始",
+      "session start"
+    ],
+    [
+      "会话结束",
+      "session end"
+    ],
+    [
+      "回合开始",
+      "turn start"
+    ],
+    [
+      "回合结束",
+      "turn end"
+    ],
+    [
+      "归属链接",
+      "attribution link"
+    ],
+    [
+      "工作认领",
+      "work claim"
+    ],
+    [
+      "工具调用",
+      "tool call"
+    ],
+    [
+      "超时提醒",
+      "timeout reminder"
+    ],
+    [
+      "等人时长",
+      "user wait time"
+    ],
+    [
+      "离开间隔",
+      "absence gap"
+    ],
+    [
+      "工作归档",
+      "work archive"
+    ],
+    [
+      "工作上报",
+      "work report"
+    ],
+    [
+      "工作关闭",
+      "work close"
+    ],
+    [
+      "收尾小结",
+      "wrap-up summary"
+    ],
+    [
+      "枝节记录",
+      "side issue"
+    ],
+    [
+      "改进记录",
+      "improvement record"
+    ],
+    [
+      "会话",
+      "session"
+    ],
+    [
+      "工作",
+      "work"
+    ],
+    [
+      "调用",
+      "call"
+    ],
+    [
+      "收尾",
+      "wrapped up"
+    ],
+    [
+      "按需",
+      "on demand"
+    ],
+    [
+      "灯语义按类别分开：按需事件永远不亮红黄。",
+      "Lamp semantics differ by class: on-demand events never light red or yellow."
+    ],
+    [
+      "太短的会话会把覆盖率系统性拉低：至少 2 次提问，或至少 1 个有分钟的回合。",
+      "Very short sessions systematically drag coverage down: require 2+ prompts, or 1+ turn with minutes recorded."
+    ],
+    [
+      "首次绑定之前就动手的会话比例——衡量「主动绑定」而不是靠提醒。\n\n    每会话从第一条事件看到第一个 start/work_claim；之前的 tool 调用与 end 过的回合\n    都算「先动手」。没有绑定记录的会话不进入分母（那是另一类问题）。\n    ",
+      "Share of sessions that act before their first bind — measures proactive binding, not reminders.\n\n    Per session, scan from the first event to the first start/work_claim; earlier tool calls and ended turns\n    count as acting first. Sessions with no binding record stay out of the denominator (a separate problem).\n    "
+    ],
+    [
+      "按工具汇总采集健康度，供面板「健康度」tab 使用。",
+      "Aggregate collection health per tool, for the panel's Health tab."
+    ],
+    [
+      "仅 ",
+      "only "
+    ],
+    [
+      " 有对应钩子",
+      " has the matching hook"
+    ],
+    [
+      "工具调用没有归属到工作",
+      "Tool calls are not attributed to work"
+    ],
+    [
+      "{missing_work}/{tool_row['events']} 条 tool 事件缺 work_id，时间会算到错误的账上",
+      "{missing_work}/{tool_row['events']} tool events lack work_id; time lands on the wrong ledger"
+    ],
+    [
+      "record_tool 只写 sid/name/is_error，没有解析当前绑定",
+      "record_tool writes only sid/name/is_error without resolving the current binding"
+    ],
+    [
+      " 等",
+      " and more"
+    ],
+    [
+      "有开始、没收尾",
+      "Started but never wrapped up"
+    ],
+    [
+      "未收尾 {len(unclosed)} 个（{len(ids)} 个 id）：{sample}{more}",
+      "{len(unclosed)} unclosed ({len(ids)} ids): {sample}{more}"
+    ],
+    [
+      "收尾提示弱，或 end 时没有可写的字段",
+      "Weak wrap-up prompt, or end has no fields to fill"
+    ],
+    [
+      "收尾一条小结都没有",
+      "Not a single wrap-up summary"
+    ],
+    [
+      "{len(works_ended)} 个工作收尾，0 条 work_summary",
+      "works wrapped up: {len(works_ended)}, work_summary rows: 0"
+    ],
+    [
+      "DSH 侧三句字段没进工具 schema，模型永远传不上来",
+      "The three-field schema never reached the DSH tool, so the model can never send it"
+    ],
+    [
+      "提醒之后不跟进",
+      "No follow-through after reminders"
+    ],
+    [
+      "{len(reminders)} 次提醒，10 分钟内上报 {followed} 次",
+      "reminders: {len(reminders)}, reports within 10 minutes: {followed}"
+    ],
+    [
+      "提醒的措辞或位置没被模型接住",
+      "The reminder wording or placement does not land with the model"
+    ],
+    [
+      "{entry['label']}完全没有事件",
+      "{entry['label']} has no events at all"
+    ],
+    [
+      "{entry['tool']}：0 条，但这类事件本应有 {denominators[entry['class']]} 个锚点",
+      "{entry['tool']}: 0 rows, but this class should have {denominators[entry['class']]} anchors"
+    ],
+    [
+      "采集没上线，或这个宿主没有对应 hook",
+      "Collection is not shipped, or this host has no matching hook"
+    ],
+    [
+      "还没有改进记录",
+      "No improvement records yet"
+    ],
+    [
+      "{len(works_ended)} 个工作收尾，0 条 adjustment",
+      "works wrapped up: {len(works_ended)}, adjustment rows: 0"
+    ],
+    [
+      "改进只停留在对话里，事后无法核对有没有效",
+      "Improvements stay in chat, so nobody can check later whether they worked"
+    ],
+    [
+      "多数会话先动手后绑定",
+      "Most sessions act before binding"
+    ],
+    [
+      "{binding.get('sessions_with_early_work', 0)}/{binding['sessions']} 个会话在首次绑定前",
+      "{binding.get('sessions_with_early_work', 0)}/{binding['sessions']} sessions used tools or ended turns"
+    ],
+    [
+      "用过工具或结束过回合，中位 {binding.get('median_tools_before')} 次工具",
+      " before their first bind, median {binding.get('median_tools_before')} tool calls"
+    ],
+    [
+      "首轮提示是列表型，绑定动作排在候选后面",
+      "The first-turn hint is list-shaped and the bind action sits after the candidates"
+    ],
+    [
+      "样本太少，先别下结论",
+      "Sample too small; do not conclude yet"
+    ],
+    [
+      "有效会话只有 {len(eligible)} 个",
+      "eligible sessions: {len(eligible)}"
+    ],
+    [
+      "覆盖率在会话数少时波动很大",
+      "Coverage swings wildly with few sessions"
+    ],
+    [
+      "这段时间没有有效会话，先攒点数据再判断",
+      "No eligible sessions in this window; collect more data before judging"
+    ],
+    [
+      "{len(warns)} 个问题，最该先修：{warns[0]['title']}",
+      "problems: {len(warns)}; fix this first: {warns[0]['title']}"
+    ],
+    [
+      "采集健康，没有发现异常",
+      "Collection is healthy, nothing abnormal found"
+    ],
+    [
+      "把 health_summary 的输出变成一段人能读、AI 也能直接吃的文本。",
+      "Turn health_summary output into text a human can read and an AI can consume directly."
+    ],
+    [
+      "Crop 健康度 · 近 {window.get('days', 7)} 天 · ",
+      "Crop health · last {window.get('days', 7)} days · "
+    ],
+    [
+      "{sessions.get('eligible', 0)} 个有效会话 · ",
+      "eligible sessions: {sessions.get('eligible', 0)} · "
+    ],
+    [
+      "工作收尾 {works.get('ended', 0)}/{works.get('started', 0)}",
+      "works wrapped up {works.get('ended', 0)}/{works.get('started', 0)}"
+    ],
+    [
+      "（{float(rate):.0%}）",
+      " ({float(rate):.0%})"
+    ],
+    [
+      "沉淀闭合：{sediment.get('with_sediment', 0)}/{sediment.get('ended', 0)}{suffix}",
+      "Sediment closure: {sediment.get('with_sediment', 0)}/{sediment.get('ended', 0)}{suffix}"
+    ],
+    [
+      "绑定前动手：{binding.get('sessions_with_early_work', 0)}/{binding['sessions']} 个会话",
+      "Acting before binding: {binding.get('sessions_with_early_work', 0)}/{binding['sessions']} sessions"
+    ],
+    [
+      "在首次绑定前用过工具或结束过回合（中位 {binding.get('median_tools_before')} 次工具）",
+      " used tools or ended turns before their first bind (median {binding.get('median_tools_before')} tool calls)"
+    ],
+    [
+      "（卡 {item['card']}）",
+      " (card {item['card']})"
+    ],
+    [
+      "- {item['title']}：{item['evidence']}{card}",
+      "- {item['title']}: {item['evidence']}{card}"
+    ],
+    [
+      "按工具：",
+      "By tool:"
+    ],
+    [
+      "绿",
+      "G"
+    ],
+    [
+      "黄",
+      "Y"
+    ],
+    [
+      "红",
+      "R"
+    ],
+    [
+      "灰",
+      "-"
+    ],
+    [
+      "{row['events']} 次（按需）",
+      "events (on demand): {row['events']}"
+    ],
+    [
+      "未上线",
+      "not shipped"
+    ],
+    [
+      "覆盖 {cover_text} · 完整 {float(row.get('field_completeness') or 0):.0%}",
+      "coverage {cover_text} · complete {float(row.get('field_completeness') or 0):.0%}"
+    ],
+    [
+      " · 闭环 {float(row['stage_closure']):.0%}",
+      " · closure {float(row['stage_closure']):.0%}"
+    ],
+    [
+      " · 缺 ",
+      " · missing "
+    ],
+    [
+      "（{row['note']}）",
+      " ({row['note']})"
+    ],
+    [
+      "  [{mark}] {row.get('label')} {row.get('tool')}：{detail}{note}",
+      "  [{mark}] {row.get('label')} {row.get('tool')}: {detail}{note}"
+    ],
+    [
+      "未登记产物，无法验证",
+      "artifact not registered, cannot verify"
+    ],
+    [
+      "产物文件不存在",
+      "artifact file does not exist"
+    ],
+    [
+      "产物存在，但还没有会话读到",
+      "artifact exists but no session has read it"
+    ],
+    [
+      "结构性注入（每会话自动加载）",
+      "structural injection (loaded automatically each session)"
+    ],
+    [
+      "已读到（{len(hits)} 次 / {len(sessions)} 个会话）",
+      "read (hits: {len(hits)}, sessions: {len(sessions)})"
+    ],
+    [
+      "同类工作中位活跃分钟",
+      "median active minutes for similar works"
+    ],
+    [
+      "每回合提醒次数",
+      "reminders per turn"
+    ],
+    [
+      "提醒到上报的中位延迟（分钟）",
+      "median reminder-to-report latency (minutes)"
+    ],
+    [
+      "未归属工作的工具调用占比",
+      "share of tool calls not attributed to work"
+    ],
+    [
+      "达标（连续 3 周改善）",
+      "met (improved 3 weeks straight)"
+    ],
+    [
+      "改善中（单周已改善，等连续 3 周）",
+      "improving (one good week, waiting for 3 straight)"
+    ],
+    [
+      "未改善",
+      "not improved"
+    ],
+    [
+      "样本不足",
+      "insufficient sample"
+    ],
+    [
+      "没有基线",
+      "no baseline"
+    ],
+    [
+      "观察中（还没攒够一周数据）",
+      "observing (not a full week of data yet)"
+    ],
+    [
+      "护栏劣化，不算改进",
+      "guardrail regressed, not an improvement"
+    ],
+    [
+      "Record one adopted improvement — the claim, not the numbers.\n\n    数值（before/after）一律由报表从事件日志派生；这里只收三样东西：\n    选哪个指标、改动证据、以及 AI/人为什么认为它会改善的**主观判断**。\n    指标不在派生表里就拒收——要加新指标，先在 core 写派生口径，\n    而不是让调用方随手塞一个数字。\n    ",
+      "Record one adopted improvement — the claim, not the numbers.\n\n    before/after numbers always derive from the event log; this call takes only three things:\n    which metric, the change evidence, and the **subjective claim** from AI or human on why it will improve.\n    Reject metrics missing from the derivation table — to add one, first write its derivation in core,\n    instead of letting a caller drop in an arbitrary number.\n    "
+    ],
+    [
+      "（指标值由事件派生；新指标需要先在 core 加派生口径）",
+      " (metric values derive from events; new metrics need a derivation in core first)"
+    ],
+    [
+      "evidence is required: commit / PR / file / command，说明改了什么",
+      "evidence is required: commit / PR / file / command showing what changed"
+    ],
+    [
+      "note is required: 一句话说明你为什么认为这条改动会改善指标（这就是 AI 该提供的主观判断）",
+      "note is required: one sentence on why you think this change improves the metric (the subjective claim the AI must supply)"
+    ],
+    [
+      "(值, 样本量)；指标值只从原始事件派生，未知指标返回 (None, 0)。",
+      "(value, sample size); values derive only from raw events, unknown metrics return (None, 0)."
+    ],
+    [
+      "把 [start, end) 按 7 天切桶；指标值逐周派生，最后不满一周的桶标 complete=False。",
+      "Bucket [start, end) into 7-day weeks; derive values per week, and mark a trailing partial week complete=False."
+    ],
+    [
+      "改进台账 · 近 {ledger.get('window', {}).get('days', 0)} 天 · {ledger.get('total', 0)} 条",
+      "Improvement ledger · last {ledger.get('window', {}).get('days', 0)} days · entries: {ledger.get('total', 0)}"
+    ],
+    [
+      "（样本 <{ledger.get('min_sample')} 只给数字，不下结论）",
+      " (samples <{ledger.get('min_sample')}: numbers only, no verdict)"
+    ],
+    [
+      "还没有 adjustment 记录。采纳改进时用 crop adjust 记一条。",
+      "No adjustment records yet. When adopting an improvement, log it with crop adjust."
+    ],
+    [
+      "无基线",
+      "no baseline"
+    ],
+    [
+      "暂无数据",
+      "no data yet"
+    ],
+    [
+      "，变化 {row['delta']:+.0%}",
+      ", change {row['delta']:+.0%}"
+    ],
+    [
+      "- [{row.get('status_label')}] {row.get('metric_label')}：基线 {before} → 当前 {after}{delta}",
+      "- [{row.get('status_label')}] {row.get('metric_label')}: baseline {before} → current {after}{delta}"
+    ],
+    [
+      "（样本 {row.get('samples', {}).get('before', 0)}/{row.get('samples', {}).get('after', 0)}，",
+      " (samples {row.get('samples', {}).get('before', 0)}/{row.get('samples', {}).get('after', 0)}, "
+    ],
+    [
+      "观察 {row.get('age_days')} 天）",
+      "observed {row.get('age_days')} days)"
+    ],
+    [
+      "  假设：{row['note']}",
+      "  Claim: {row['note']}"
+    ],
+    [
+      "  护栏变差：",
+      "  Guardrails worse: "
+    ],
+    [
+      "（任一项变差即不算改进）",
+      " (any worse item voids the improvement)"
+    ],
+    [
+      "  证据：{row['evidence']}",
+      "  Evidence: {row['evidence']}"
+    ],
+    [
+      "（未登记）",
+      "(unregistered)"
+    ],
+    [
+      "  产物：{where} —— {artifact.get('label')}",
+      "  Artifact: {where} —— {artifact.get('label')}"
+    ],
+    [
+      " 等 {len(artifact['sessions'])} 个会话",
+      " and {len(artifact['sessions'])} sessions total"
+    ],
+    [
+      "  读到会话：{shown}{more}（首次 {first}）",
+      "  Read by: {shown}{more} (first {first})"
+    ],
+    [
+      "- 回滚提示：{row.get('metric_label')}（{row.get('work_id') or '未挂工作'}）",
+      "- Rollback hint: {row.get('metric_label')} ({row.get('work_id') or 'no work attached'})"
+    ],
+    [
+      "已满 {LEDGER_WEEKS} 周仍未达标，可以回滚；回滚前先看证据：{row.get('evidence')}",
+      " {LEDGER_WEEKS} weeks in and still not met, safe to roll back; check the evidence first: {row.get('evidence')}"
+    ],
+    [
+      "- demo-work — 示例工作（3 分钟前）",
+      "- demo-work — sample work (3 min ago)"
+    ],
+    [
+      "# 注入预览（示例变量）",
+      "# Injection preview (sample variables)"
+    ],
+    [
+      "## {name}（内置默认，未覆盖）",
+      "## {name} (built-in default, not overridden)"
+    ],
+    [
+      "## {name}（已关闭：none）",
+      "## {name} (disabled: none)"
+    ],
+    [
+      "## voice/{tier}（自定义，{len(custom)} 条）",
+      "## voice/{tier} (custom, {len(custom)} entries)"
+    ],
+    [
+      "## voice/{tier}（内置文案池）",
+      "## voice/{tier} (built-in copy pool)"
+    ]
+  ]
+}

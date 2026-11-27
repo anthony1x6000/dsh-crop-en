@@ -1,0 +1,116 @@
+{
+  "upstream": "0.8.4",
+  "file": "bin/crop",
+  "lang": "py",
+  "sourceSha256": "d553b7a0e89f297b2a11306ddfd95ac33b65d4e2016449afb761a9ba92fff714",
+  "entries": [
+    [
+      "现在在干什么：当前块、今日事件、进行中的工作",
+      "What is happening now: current block, today events, work in progress"
+    ],
+    [
+      "输出 JSON",
+      "Output JSON"
+    ],
+    [
+      "只看这个工作区的工作",
+      "Only show work in this workspace"
+    ],
+    [
+      "记一条支线（不改当前工作，不打断对话）",
+      "Record a side issue (does not change current work or interrupt the conversation)"
+    ],
+    [
+      "把当前会话的焦点切到一条工作（不改状态）",
+      "Switch this session focus to one work item (does not change status)"
+    ],
+    [
+      "把一条工作挂起（保留在册）",
+      "Suspend a work item (stays on the books)"
+    ],
+    [
+      "恢复挂起的工作",
+      "Resume a suspended work item"
+    ],
+    [
+      "归档一条工作（不删除，可恢复）",
+      "Archive a work item (not deleted, can be restored)"
+    ],
+    [
+      "把挂起超期的工作归档",
+      "Archive work items suspended past the cutoff"
+    ],
+    [
+      "周期复盘（事实层，文字版交给 Agent）",
+      "Periodic retro (fact layer; the write-up is left to the agent)"
+    ],
+    [
+      "记一条采纳的改进（数值由台账派生，只收证据和主观判断）",
+      "Record an adopted improvement (numbers come from the ledger; only evidence and a judgment are collected)"
+    ],
+    [
+      "指标由系统从事件派生；要加新指标先在 core 写口径",
+      "Metric is derived by the system from events; to add one, define it in core first"
+    ],
+    [
+      "commit / PR / 文件 / 命令，说明改了什么",
+      "commit / PR / file / command that shows what changed"
+    ],
+    [
+      "一句话主观判断：为什么认为它会改善指标",
+      "One-line judgment: why this should improve the metric"
+    ],
+    [
+      "这条改进挂在哪个工作上（可选）",
+      "Work item this improvement belongs to (optional)"
+    ],
+    [
+      "采样窗口说明，如 2026-10-20~11-03",
+      "Sampling window, e.g. 2026-10-20~11-03"
+    ],
+    [
+      "产物落点：kind:path#anchor（kind=file/skill/hook），如 file:docs/FOO.md#§1",
+      "Artifact location: kind:path#anchor (kind=file/skill/hook), e.g. file:docs/FOO.md#§1"
+    ],
+    [
+      "read=按需读取（默认）；injected=每会话自动注入的载体（如 AGENTS.md）",
+      "read=load on demand (default); injected=carrier injected into every session (e.g. AGENTS.md)"
+    ],
+    [
+      "改进台账：前后值、样本量、护栏、回滚提示",
+      "Improvement ledger: before/after values, sample size, guardrails, rollback hints"
+    ],
+    [
+      "按采集工具看健康度（覆盖/完整/闭环/诊断）",
+      "Health by collection tool (coverage / completeness / closure / diagnostics)"
+    ],
+    [
+      "只看某个宿主，如 dsh / claude-code",
+      "Only one host, e.g. dsh / claude-code"
+    ],
+    [
+      "输出 JSON（给 AI / 脚本）",
+      "Output JSON (for AI / scripts)"
+    ],
+    [
+      "预览当前注入模板的渲染结果（示例变量）",
+      "Preview the rendered output of the current injection templates (sample variables)"
+    ],
+    [
+      "最近注入的鞭策：策略/档位/来源/全文",
+      "Recent nudges: strategy / tier / source / full text"
+    ],
+    [
+      "本地 dashboard",
+      "Local dashboard"
+    ],
+    [
+      "还没有记录过鞭策注入。",
+      "No nudge injections recorded yet."
+    ],
+    [
+      "recorded adjustment {event['metric']}（数值由 crop ledger 从事件派生）",
+      "recorded adjustment {event['metric']} (numbers are derived by crop ledger from events)"
+    ]
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "dsh-crop-en",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "English overlay for agent-crop-dsh: translates the plugin's Web panel, model-facing tool text and Python CLI output.",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "translations",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "docs",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "verify": "node tools/verify-installed.mjs",
+    "apply": "node tools/apply.mjs",
+    "restore": "node tools/apply.mjs --restore"
+  },
+  "engines": {
+    "node": ">=22.19"
+  },
+  "license": "MIT"
+}

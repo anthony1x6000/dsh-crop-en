@@ -1,0 +1,73 @@
+{
+  "name": "agent-crop-dsh",
+  "version": "0.8.4",
+  "description": "Agent Crop（给 AI 编程助手一根马鞭）：本地记录时间去向，把复盘写回 agent 指令/技能/工具，改没改好用数据说话 | local probe for coding agents — task-block timing, red-line nudges, self-reports and a live panel.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oriliz/agent-crop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oriliz/agent-crop/issues"
+  },
+  "homepage": "https://github.com/oriliz/agent-crop#readme",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "coding-agent",
+    "observability",
+    "tracing",
+    "claude-code"
+  ],
+  "main": "./dsh/lib/index.js",
+  "bin": {
+    "crop": "./bin/crop"
+  },
+  "exports": {
+    ".": "./dsh/lib/index.js",
+    "./client": "./dsh/lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "dsh/lib",
+    "dsh/assets",
+    "dsh/cordis.patch.yml",
+    "core",
+    "hooks",
+    "config",
+    "README.md",
+    "!**/__pycache__",
+    "!**/*.pyc"
+  ],
+  "scripts": {
+    "test": "node --test dsh/test/index.test.mjs dsh/test/client.test.mjs && python3 -m unittest discover -s tests -t . && bash tests/probe-smoke.sh",
+    "test:node": "node --test dsh/test/index.test.mjs dsh/test/client.test.mjs",
+    "test:python": "python3 -m unittest discover -s tests -t .",
+    "test:smoke": "bash tests/probe-smoke.sh"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./dsh/cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar-right",
+        "@deepseek-ai/dsh-client-ui-renderer"
+      ]
+    }
+  },
+  "engines": {
+    "dsh": ">=0.2.1 <0.3.0",
+    "node": ">=22.19"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.19.0"
+  }
+}

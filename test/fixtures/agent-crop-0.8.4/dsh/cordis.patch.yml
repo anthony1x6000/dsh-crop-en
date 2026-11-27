@@ -1,0 +1,5 @@
+- insert:
+    - id: agent-crop-dsh
+      name: 'agent-crop-dsh'
+      config:
+        python: python3

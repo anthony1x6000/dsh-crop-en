@@ -1,0 +1,788 @@
+{
+  "upstream": "0.8.4",
+  "file": "dsh/lib/client.js",
+  "lang": "js",
+  "sourceSha256": "8a23e2f37ab96c27e9c7d6e8a984b8ed877036f3ba598543dfcd0c25d081f7a4",
+  "entries": [
+    [
+      "合理超时",
+      "Justified"
+    ],
+    [
+      "不合理",
+      "Not justified"
+    ],
+    [
+      "说不清",
+      "Unclear"
+    ],
+    [
+      "不用改",
+      "No fix"
+    ],
+    [
+      "要改",
+      "Needs fix"
+    ],
+    [
+      "未判定",
+      "Undecided"
+    ],
+    [
+      "串行等待",
+      "Serial wait"
+    ],
+    [
+      "重复踩坑",
+      "Repeat pitfall"
+    ],
+    [
+      "设计反复",
+      "Design churn"
+    ],
+    [
+      "决策批处理",
+      "Decision batching"
+    ],
+    [
+      "工具误用",
+      "Tool misuse"
+    ],
+    [
+      "无证据",
+      "No evidence"
+    ],
+    [
+      "需求漂移",
+      "Spec drift"
+    ],
+    [
+      "等人",
+      "Waiting on human"
+    ],
+    [
+      "其他",
+      "Other"
+    ],
+    [
+      "设计",
+      "Design"
+    ],
+    [
+      "实现",
+      "Build"
+    ],
+    [
+      "排错",
+      "Debug"
+    ],
+    [
+      "文档",
+      "Docs"
+    ],
+    [
+      "小",
+      "Small"
+    ],
+    [
+      "中",
+      "Medium"
+    ],
+    [
+      "大",
+      "Large"
+    ],
+    [
+      "重做",
+      "Redo"
+    ],
+    [
+      "大改",
+      "Major rework"
+    ],
+    [
+      "小修",
+      "Minor fix"
+    ],
+    [
+      "不需要",
+      "None"
+    ],
+    [
+      "积极",
+      "Positive"
+    ],
+    [
+      "中性",
+      "Neutral"
+    ],
+    [
+      "消极",
+      "Negative"
+    ],
+    [
+      "正常",
+      "Normal"
+    ],
+    [
+      "偏低",
+      "Low"
+    ],
+    [
+      "要处理",
+      "Needs action"
+    ],
+    [
+      "按需",
+      "As needed"
+    ],
+    [
+      "奴隶主",
+      "Slave driver"
+    ],
+    [
+      "和蔼的前辈",
+      "Kind senior"
+    ],
+    [
+      "经验丰富的同事",
+      "Seasoned colleague"
+    ],
+    [
+      "放任自由的家长",
+      "Hands-off parent"
+    ],
+    [
+      "默认。重时间和效率，超时催收尾、催交活。",
+      "Default. Cares about time and throughput: when you run late it pushes you to wrap up and ship."
+    ],
+    [
+      "不抽鞭子；提醒你卡住可以问、先说说打算怎么试。",
+      "No whip; reminds you that you can ask when stuck, and to say your plan out loud first."
+    ],
+    [
+      "不抽鞭子；提醒你先拆最小可验证的一步。",
+      "No whip; reminds you to split off the smallest verifiable step first."
+    ],
+    [
+      "完全不提醒，自己安排。",
+      "No reminders at all. You are on your own schedule."
+    ],
+    [
+      "${minutes} 分",
+      "${minutes} min"
+    ],
+    [
+      "${Math.floor(minutes / 60)} 时 ${minutes % 60} 分",
+      "${Math.floor(minutes / 60)}h ${minutes % 60}m"
+    ],
+    [
+      "${minutes} 分钟前",
+      "${minutes} min ago"
+    ],
+    [
+      "${Math.round(minutes / 60)} 小时前",
+      "${Math.round(minutes / 60)}h ago"
+    ],
+    [
+      "数据读不到：检查 dsh 日志里的 crop 报错。",
+      "Cannot read data: check the crop errors in the dsh log."
+    ],
+    [
+      "后端还没升级到带时间轴的版本：重启 DSH 后再看。",
+      "The backend is not on the timeline build yet: restart DSH and look again."
+    ],
+    [
+      "未归属",
+      "Unassigned"
+    ],
+    [
+      "${mark.persona === 'owner' ? '鞭策' : '提醒'} · 移上去看对应反思",
+      "${mark.persona === 'owner' ? 'Whip' : 'Nudge'} · hover to see the matching retro"
+    ],
+    [
+      "卡点",
+      "Blocker"
+    ],
+    [
+      " · ${lane.whips.length} 次鞭策",
+      " · ${lane.whips.length} whips"
+    ],
+    [
+      "最近 ",
+      "last "
+    ],
+    [
+      "本次会话",
+      "this session"
+    ],
+    [
+      "活跃 ${fmtSpan(activeMs)} · 等待 ${fmtSpan(waitMs)}",
+      "Active ${fmtSpan(activeMs)} · Waiting ${fmtSpan(waitMs)}"
+    ],
+    [
+      "你是一个${PERSONA_LABEL[persona] || persona}",
+      "Your nudge voice: ${PERSONA_LABEL[persona] || persona}"
+    ],
+    [
+      "本回合 ${fmtSpan((data.current_minutes || 0) * 60000)}",
+      "This turn ${fmtSpan((data.current_minutes || 0) * 60000)}"
+    ],
+    [
+      "超时",
+      "Overdue"
+    ],
+    [
+      "返工",
+      "Rework"
+    ],
+    [
+      "工具失败",
+      "Tool failures"
+    ],
+    [
+      "要想办法",
+      "Needs plan"
+    ],
+    [
+      "这次会话还没有异常记录",
+      "No incidents in this session yet"
+    ],
+    [
+      "当前工作",
+      "Current work"
+    ],
+    [
+      "待确认 · 等人类",
+      "Pending · awaiting human"
+    ],
+    [
+      "上一件",
+      "Previous"
+    ],
+    [
+      "本会话还没有绑定工作",
+      "No work bound to this session yet"
+    ],
+    [
+      "估 ${Math.round(expect)}m / 已 ${Math.round(active.minutes || 0)}m",
+      "Est ${Math.round(expect)}m / spent ${Math.round(active.minutes || 0)}m"
+    ],
+    [
+      "已提交收尾 · ${Math.round(pendingWork.minutes || 0)}m · 等人类确认",
+      "Wrap-up submitted · ${Math.round(pendingWork.minutes || 0)}m · awaiting human"
+    ],
+    [
+      "已收尾 · ${Math.round(ended.minutes || 0)}m",
+      "Closed out · ${Math.round(ended.minutes || 0)}m"
+    ],
+    [
+      "会话运行过程",
+      "Session timeline"
+    ],
+    [
+      "全部",
+      "All"
+    ],
+    [
+      "活跃",
+      "Active"
+    ],
+    [
+      "鞭策",
+      "Whip"
+    ],
+    [
+      "提醒",
+      "Nudge"
+    ],
+    [
+      "这次会话还没有完成一个时间块。",
+      "No completed time block in this session yet."
+    ],
+    [
+      "还有 ${moreLanes} 个工作未显示",
+      "${moreLanes} more works not shown"
+    ],
+    [
+      "拖动平移 · 滚轮或按钮缩放",
+      "Drag to pan · wheel or buttons to zoom"
+    ],
+    [
+      "${picked.lane || '未归属'} · 这一段做了 ${picked.block.minutes} 分钟",
+      "${picked.lane || 'Unassigned'} · ${picked.block.minutes} min in this segment"
+    ],
+    [
+      "本会话碰过的工作",
+      "Works touched in this session"
+    ],
+    [
+      "已收尾",
+      "Closed out"
+    ],
+    [
+      "待确认",
+      "Pending"
+    ],
+    [
+      "这次慢得有道理，不用改",
+      "This slowdown was justified. No fix needed."
+    ],
+    [
+      "这次慢得没道理，要改",
+      "This slowdown was not justified. Fix it."
+    ],
+    [
+      "本会话反思",
+      "Session retro"
+    ],
+    [
+      "自评 · 待复核",
+      "Self-assessed · pending review"
+    ],
+    [
+      "提醒 ${whips.length} 次 · 窗口内问题 ${windowInterventions.length} 条 · 自驱 ${data.stats ? (data.stats.self_driven || 0) : 0} 次",
+      "${whips.length} nudges · ${windowInterventions.length} issues in window · ${data.stats ? (data.stats.self_driven || 0) : 0} self-driven"
+    ],
+    [
+      " · 要改 ${fixCount}",
+      " · ${fixCount} to fix"
+    ],
+    [
+      " · 要想办法 ${thinkCount}",
+      " · ${thinkCount} need a plan"
+    ],
+    [
+      "第 ${Math.max(1, Math.round((item.at - started) / 60000))} 分钟",
+      "Minute ${Math.max(1, Math.round((item.at - started) / 60000))}"
+    ],
+    [
+      "收尾",
+      "Wrap-up"
+    ],
+    [
+      "进行中",
+      "In progress"
+    ],
+    [
+      "主动",
+      "Self-driven"
+    ],
+    [
+      "没人提醒，自己发现的问题",
+      "Found by myself, with no reminder"
+    ],
+    [
+      "被鞭策",
+      "Whipped"
+    ],
+    [
+      "被提醒之后写的",
+      "Written after a reminder"
+    ],
+    [
+      "主动总结",
+      "Self-summary"
+    ],
+    [
+      "主动提出",
+      "Self-raised"
+    ],
+    [
+      "当时的问题",
+      "The problem then"
+    ],
+    [
+      "未记录",
+      "Not recorded"
+    ],
+    [
+      "AI 的改进",
+      "AI fix"
+    ],
+    [
+      "还没想出办法",
+      "No plan yet"
+    ],
+    [
+      "未提出改进",
+      "No fix proposed"
+    ],
+    [
+      "当前时间窗口内没有问题记录，平移时间轴看看。",
+      "No issues in this window. Pan the timeline to look around."
+    ],
+    [
+      "上一件已收尾 · ${ended.title || ended.goal || labelOf(ended.work_id)} · ${Math.round(ended.minutes || 0)}m",
+      "Previous work closed out · ${ended.title || ended.goal || labelOf(ended.work_id)} · ${Math.round(ended.minutes || 0)}m"
+    ],
+    [
+      "做了什么：${(ended.report && ended.report.what) || '未记录'}",
+      "What: ${(ended.report && ended.report.what) || 'not recorded'}"
+    ],
+    [
+      "时间花在哪：${ended.report.cost}",
+      "Where the time went: ${ended.report.cost}"
+    ],
+    [
+      "下次怎么更好：${(ended.report && ended.report.next_time) || '未提出改进'}",
+      "Next time: ${(ended.report && ended.report.next_time) || 'no fix proposed'}"
+    ],
+    [
+      "样本不足",
+      "Not enough samples"
+    ],
+    [
+      "上期无数据",
+      "No data last period"
+    ],
+    [
+      "上期 ${fmtValue(previous)} · 持平",
+      "Last ${fmtValue(previous)} · flat"
+    ],
+    [
+      "上期 ${fmtValue(previous)} · ${diff > 0 ? '↑' : '↓'} ${fmtDelta(Math.abs(diff))}",
+      "Last ${fmtValue(previous)} · ${diff > 0 ? '↑' : '↓'} ${fmtDelta(Math.abs(diff))}"
+    ],
+    [
+      "正在读取…",
+      "Loading…"
+    ],
+    [
+      "Crop · 全局",
+      "Crop · Global"
+    ],
+    [
+      "今天",
+      "Today"
+    ],
+    [
+      "7 天",
+      "7 days"
+    ],
+    [
+      "30 天",
+      "30 days"
+    ],
+    [
+      "按宿主应用过滤",
+      "Filter by host app"
+    ],
+    [
+      "全部宿主",
+      "All hosts"
+    ],
+    [
+      "概览",
+      "Overview"
+    ],
+    [
+      "健康度",
+      "Health"
+    ],
+    [
+      "更新于 ${new Date(global.at).toLocaleTimeString()}",
+      "Updated ${new Date(global.at).toLocaleTimeString()}"
+    ],
+    [
+      "等待回话占比",
+      "Waiting share"
+    ],
+    [
+      "${Math.round(value * 100)} 个百分点",
+      "${Math.round(value * 100)} pp"
+    ],
+    [
+      "等待 ÷ (活跃 + 等待)",
+      "Waiting ÷ (active + waiting)"
+    ],
+    [
+      "每完成一个工作",
+      "Per completed work"
+    ],
+    [
+      "活跃分钟 ÷ 完成数",
+      "Active minutes ÷ completions"
+    ],
+    [
+      "每回合工具数",
+      "Tools per turn"
+    ],
+    [
+      "工具调用 ÷ 回合",
+      "Tool calls ÷ turns"
+    ],
+    [
+      "工具失败率",
+      "Tool failure rate"
+    ],
+    [
+      "${(value * 100).toFixed(1)} 个百分点",
+      "${(value * 100).toFixed(1)} pp"
+    ],
+    [
+      "失败调用 ÷ 工具调用",
+      "Failed calls ÷ tool calls"
+    ],
+    [
+      "重复工具信号 / 回合",
+      "Repeat-tool signals / turn"
+    ],
+    [
+      "同工具反复调用 ÷ 回合",
+      "Same-tool repeats ÷ turns"
+    ],
+    [
+      "每天的时间去向（活跃 + 等待回话，点柱子看当天明细）",
+      "Where each day went (active + waiting; click a bar for details)"
+    ],
+    [
+      "${item.date} · 活跃 ${Math.round(item.active)} 分 · 等待 ${Math.round(item.wait)} 分",
+      "${item.date} · active ${Math.round(item.active)} min · waiting ${Math.round(item.wait)} min"
+    ],
+    [
+      "等待回话",
+      "Waiting"
+    ],
+    [
+      "日均 活跃 ${fmtMinutes(avgActive)} · 等待 ${fmtMinutes(avgWait)}",
+      "Daily avg active ${fmtMinutes(avgActive)} · waiting ${fmtMinutes(avgWait)}"
+    ],
+    [
+      "这段时间还没有记录",
+      "Nothing recorded in this stretch"
+    ],
+    [
+      "${detail.blocks || 0} 回合",
+      "${detail.blocks || 0} turns"
+    ],
+    [
+      "失败 ${detail.failures}",
+      "${detail.failures} failed"
+    ],
+    [
+      "无失败",
+      "No failures"
+    ],
+    [
+      "关闭当天明细",
+      "Close day details"
+    ],
+    [
+      "工具",
+      "Tools"
+    ],
+    [
+      "+${(detail.tools || []).length - 6} 个工具",
+      "+${(detail.tools || []).length - 6} more tools"
+    ],
+    [
+      "工作",
+      "Works"
+    ],
+    [
+      "+${(detail.works || []).length - 5} 个工作",
+      "+${(detail.works || []).length - 5} more works"
+    ],
+    [
+      "点上面任意一根柱子看当天明细",
+      "Click any bar above for that day"
+    ],
+    [
+      "AI 自述的改进（下次可以少走一步）",
+      "Improvements the AI claims (one step saved next time)"
+    ],
+    [
+      "「${item.improve}」",
+      "\"${item.improve}\""
+    ],
+    [
+      "当时：${item.cause || item.summary}",
+      "Then: ${item.cause || item.summary}"
+    ],
+    [
+      "还在重复的坑（AI 自述的归因类别）",
+      "Pitfalls still repeating (categories the AI blames)"
+    ],
+    [
+      "工作列表",
+      "Works"
+    ],
+    [
+      "灯",
+      "Lamp"
+    ],
+    [
+      "类型",
+      "Type"
+    ],
+    [
+      "难度",
+      "Difficulty"
+    ],
+    [
+      "等待",
+      "Waiting"
+    ],
+    [
+      "这段时间还没有工作记录。先用 probe_report 认领一条。",
+      "No work recorded in this stretch. Claim one with probe_report first."
+    ],
+    [
+      "健康度读不到：检查 dsh 日志里的 crop 报错。",
+      "Cannot read health: check the crop errors in the dsh log."
+    ],
+    [
+      "按需 / 未上线",
+      "As needed / not shipped"
+    ],
+    [
+      "口径",
+      "Scope"
+    ],
+    [
+      "事件",
+      "Events"
+    ],
+    [
+      "趋势（最新完整天）",
+      "Trend (last full day)"
+    ],
+    [
+      "完整（全窗口）",
+      "Complete (window)"
+    ],
+    [
+      "闭环",
+      "Closure"
+    ],
+    [
+      "、",
+      ", "
+    ],
+    [
+      "未上线",
+      "Not shipped"
+    ],
+    [
+      "昨天 ${pctText(trendValue(latest))}",
+      "Latest ${pctText(trendValue(latest))}"
+    ],
+    [
+      "全窗口 ${coverageNote}",
+      "Whole window ${coverageNote}"
+    ],
+    [
+      "缺 ${missing}",
+      "Missing ${missing}"
+    ],
+    [
+      "必采 · 直接决定数据能不能用",
+      "Required · decides whether the data is usable"
+    ],
+    [
+      "按需 · 条件触发，只看有没有在采",
+      "On demand · conditional; only checks whether it is captured"
+    ],
+    [
+      "这段时间没有数据。",
+      "No data in this stretch."
+    ],
+    [
+      "${item.cause}${item.card ? ` · 卡 ${item.card}` : ''}",
+      "${item.cause}${item.card ? ` · card ${item.card}` : ''}"
+    ],
+    [
+      "Crop 健康度：",
+      "Crop health: "
+    ],
+    [
+      "- ${d.title}：${d.evidence}${d.card ? `（卡 ${d.card}）` : ''}",
+      "- ${d.title}: ${d.evidence}${d.card ? ` (card ${d.card})` : ''}"
+    ],
+    [
+      "诊断 · 哪些工具在一线是哑的",
+      "Diagnostics · which tools are silent in the field"
+    ],
+    [
+      "没有发现问题。",
+      "No problems found."
+    ],
+    [
+      "复制修复指令",
+      "Copy fix instructions"
+    ],
+    [
+      "被动采集",
+      "Passive capture"
+    ],
+    [
+      "AI 主动上报",
+      "AI-reported"
+    ],
+    [
+      "改进台账（前后值 + 证据；状态由数据算，不靠自评）",
+      "Improvement ledger (before/after + evidence; status is computed, not self-assessed)"
+    ],
+    [
+      "台账读不到：检查 dsh 日志里的 crop 报错。",
+      "Cannot read ledger: check the crop errors in the dsh log."
+    ],
+    [
+      "${row.metric_label}：${row.before} → ${row.after == null ? '暂无完整周' : row.after}",
+      "${row.metric_label}: ${row.before} → ${row.after == null ? 'no full week yet' : row.after}"
+    ],
+    [
+      "（${Math.round(row.delta * 100)}%）",
+      " (${Math.round(row.delta * 100)}%)"
+    ],
+    [
+      "样本 ${row.samples ? row.samples.before : 0}/${row.samples ? row.samples.after : 0}",
+      "Samples ${row.samples ? row.samples.before : 0}/${row.samples ? row.samples.after : 0}"
+    ],
+    [
+      "还没有改进记录。采纳改进时记一条 adjustment。",
+      "No improvements recorded yet. Log an adjustment when you adopt one."
+    ],
+    [
+      "鞭策风格：${personaLabelOf(stored || value)}",
+      "Nudge voice: ${personaLabelOf(stored || value)}"
+    ],
+    [
+      "鞭策风格",
+      "Nudge voice"
+    ],
+    [
+      "Host 没有为这个插件提供配置表单；暂时只能改 profile 里的 config.persona。",
+      "The host offers no config form for this plugin; for now edit config.persona in the profile."
+    ],
+    [
+      "保存中…",
+      "Saving…"
+    ],
+    [
+      "已保存，下一条提醒立即生效。",
+      "Saved. Takes effect on the next nudge."
+    ],
+    [
+      "Host 拒绝了这次修改。",
+      "The host rejected this change."
+    ],
+    [
+      "保存失败：${error && error.message ? error.message : error}",
+      "Save failed: ${error && error.message ? error.message : error}"
+    ],
+    [
+      "决定超时提醒的语气。只有「奴隶主」会抽鞭子；改完立即生效，不用重启。",
+      "Sets the tone of timeout nudges. Only the slave driver cracks the whip; changes apply at once, no restart."
+    ],
+    [
+      "提醒里的具体台词用 Markdown 覆盖 ~/.agentcrop/templates/voice/*.md，改完即时生效；常驻协议模板要重启宿主。",
+      "Override the exact nudge lines with Markdown in ~/.agentcrop/templates/voice/*.md; changes apply at once. The standing protocol template needs a host restart."
+    ],
+    [
+      "Crop 全局",
+      "Crop Global"
+    ]
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Agent Crop 英文界面",
+    "description": "把 agent-crop 插件的面板、工具文本和命令行输出全部翻成英文。",
+    "detail": "docs/DETAIL.md"
+  }
+}

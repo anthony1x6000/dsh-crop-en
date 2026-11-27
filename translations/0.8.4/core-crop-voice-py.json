@@ -1,0 +1,248 @@
+{
+  "upstream": "0.8.4",
+  "file": "core/crop_voice.py",
+  "lang": "py",
+  "sourceSha256": "1a2ec61bb4f20b144a40398f000c83c8d28f22ccadcfa1d1b99c334d7bf5eca6",
+  "entries": [
+    [
+      "Nudge copy for Agent Crop.\n\nThe nudge is a contract, not a clock: the AI reports how long the work should\ntake (``expect_min``) and the whip only cracks when it runs past that number.\nInside the estimate nothing fires.  Each tier owns a small pool of lines with\none shared metaphor (牛马庄园 / 奴隶主 / 鞭子); the flavour line is drawn from\nthe pool by a shuffle bag so the same sentence never shows up twice in a row,\nwhile the action paragraph stays fixed so the AI still knows what to do.\n\nThe pools are data, not logic: edit them freely, tests only pin their shape.\n",
+      "Nudge copy for Agent Crop.\n\nThe nudge is a contract, not a clock: the AI reports how long the work should\ntake (``expect_min``) and the whip only cracks when it runs past that number.\nInside the estimate nothing fires.  Each tier owns a small pool of lines with\none shared metaphor (draft-animal ranch / slave driver / whip); the flavor line is drawn from\nthe pool by a shuffle bag so the same sentence never shows up twice in a row,\nwhile the action paragraph stays fixed so the AI still knows what to do.\n\nThe pools are data, not logic: edit them freely, tests only pin their shape.\n"
+    ],
+    [
+      "工头把鞭子从墙上取下来，还没抬手。{basis} {e}，已经 {m}，还剩 {left}。真不够就现在改口。",
+      "The foreman lifts the whip off the wall but has not raised it yet. {basis} {e}, already {m}, {left} left. If that is not enough, revise now."
+    ],
+    [
+      "监工开始在你背后走来走去，脚步声越来越近。{m}了，还有 {left}，就到你自己报的数。",
+      "The overseer starts pacing behind you, footsteps getting closer. {m} in, {left} to go until you hit your own number."
+    ],
+    [
+      "奴隶主抬眼看了一下表，又低回去了。{m} / {e}，趁他还没站起来，把这一轮收个尾。",
+      "The slave driver glances at his watch, then looks back down. {m} / {e}. Wrap up this turn before he stands."
+    ],
+    [
+      "远处传来鞭子抽空气的响声。{basis} {e}，用了 {m}，还有 {left}。",
+      "A whip cracks the air somewhere in the distance. {basis} {e}, {m} used, {left} left."
+    ],
+    [
+      "牛棚里的草料不多了，账房在门口张望。{m} / {e}，进度得让人看得见。",
+      "The feed in the barn is running low and the bookkeeper is peeking in the door. {m} / {e}. Progress needs to be visible."
+    ],
+    [
+      "太阳挪了半个棚子，你还在原地转。{m}了，{basis} {e}。",
+      "The sun has moved half a barn and you are still spinning in place. {m} in, {basis} {e}."
+    ],
+    [
+      "啪！鞭子落下来了。{basis} {e}用完了，现在 {m}。这活本来就值这么久，就顶回去说清凭什么；是自己绕远了，就认账。",
+      "Crack! The whip comes down. {basis} {e} is used up; you are at {m}. If the job really needs this long, push back and say why; if you wandered off course, own it."
+    ],
+    [
+      "工头把鞭子往地上一甩：{basis} {e}，现在 {m}。用户还空着手，先给句话。",
+      "The foreman slams the whip on the ground: {basis} {e}, now {m}. The user still has nothing; say something first."
+    ],
+    [
+      "你被抽中了。{m}，{basis} {e}——解释一下，是活难还是路走歪了。",
+      "You got whipped. {m}, {basis} {e}—explain: was the job hard, or did you take a wrong path?"
+    ],
+    [
+      "牛马，{m}了。鞭子不是白抽的：要么把预期改成真实数字并说清理由，要么写 cause + verdict。",
+      "Beast of burden, {m} in. The whip is not for nothing: either change the estimate to the real number and explain why, or write cause + verdict."
+    ],
+    [
+      "钟声响了，{basis} {e}到点了，现在是 {m}。头低下来想想：换条路会不会更快？",
+      "The bell rings: {basis} {e} is up, now {m}. Head down and think: would another route be faster?"
+    ],
+    [
+      "啪！这一鞭打在进度表上。{m}，{basis} {e}，得给个说法。",
+      "Crack! This lash lands on the progress sheet. {m}, {basis} {e}. Time to give an account."
+    ],
+    [
+      "工头已经开始骂人了。{basis} {e}，干了 {m}，用户还空着手。先停下来，给个阶段成果。",
+      "The foreman is already shouting. {basis} {e}, {m} spent, and the user still has nothing. Stop and hand over a milestone."
+    ],
+    [
+      "皮鞭抽得啪啪响，{m}了还没收工，{basis} {e}。别硬撑，先看路对不对。",
+      "The leather whip is cracking, {m} in and no wrap-up, {basis} {e}. Do not force it; check the route first."
+    ],
+    [
+      "火把点起来了，棚子里的人都看着你。{basis} {e}，实做 {m}——该交个能看的半成品了。",
+      "The torches are lit and everyone in the barn is watching you. {basis} {e}, {m} actually spent. Time to hand over a presentable partial result."
+    ],
+    [
+      "账本翻到你这页：{basis} {e}，实做 {m}，超支 {over}。再拖，今晚没草料。",
+      "The ledger opens to your page: {basis} {e}, {m} actually spent, {over} over budget. Drag it out and there is no feed tonight."
+    ],
+    [
+      "这一轮已经 {m}，鞭子挂在墙上晃。先给用户一句话，再写清楚卡在哪。",
+      "This turn is already {m} and the whip sways on the wall. Say one line to the user, then write down where you are stuck."
+    ],
+    [
+      "啪——！{m}，比{basis} {e}多出 {over}。先停一下，把能交的阶段成果交出去。",
+      "Crack—! {m}, {over} more than {basis} {e}. Pause and hand over what you can deliver."
+    ],
+    [
+      "奴隶主已经站起来了，靴子在石板上敲。{basis} {e}，现在 {m}——他烧心了。今晚要么交东西，要么交解释。",
+      "The slave driver is on his feet, boots tapping the stone. {basis} {e}, now {m}—he is fuming. Tonight you deliver work or you deliver an explanation."
+    ],
+    [
+      "鞭子卷在手里，奴隶主烧心到在棚子外来回踱步。{m}，{basis} {e}，超了 {over}。",
+      "Whip coiled in hand, the slave driver is fuming and pacing outside the barn. {m}, {basis} {e}, {over} over."
+    ],
+    [
+      "棚子里空气不对：工头烧心、账房烧心，连狗都不敢叫了。{m}还没结果，先安抚用户。",
+      "The air in the barn is wrong: foreman fuming, bookkeeper fuming, even the dog has stopped barking. {m} and no result; reassure the user first."
+    ],
+    [
+      "奴隶主破防了：{basis} {e}，实做 {m}，超支 {over}。你要小心你的屁屁了。",
+      "The slave driver has lost it: {basis} {e}, {m} actually spent, {over} over budget. Watch your backside."
+    ],
+    [
+      "账本上你的名字被圈了三圈。{m}，{basis} {e}——把能交的先交了，再写清楚为什么炸。",
+      "Your name is circled three times in the ledger. {m}, {basis} {e}. Deliver what you can first, then write down why it blew up."
+    ],
+    [
+      "奴隶主感觉到了焦躁，烟一根接一根，快烧心烧成灰了。{m}了，先给用户一句人话。",
+      "The slave driver is restless, chain-smoking, nearly burned to ash with worry. {m} in; give the user one plain sentence first."
+    ],
+    [
+      "工头翻账本翻了个空：上一轮跑了挺久，一个字没记。补一行，现在。",
+      "The foreman flips the ledger and finds nothing: the last turn ran long with not one line logged. Add a line, now."
+    ],
+    [
+      "牛马埋头拉磨，磨盘转了半天，账上没墨。有进展或卡点，补一句。",
+      "The beast of burden bends to the mill, the stone turns and turns, and the ledger stays dry. Progress or blocker, add a line."
+    ],
+    [
+      "上一轮你在棚里忙了很久，登记簿是空的。补上，别让这轮白干。",
+      "You toiled in the barn last turn and the register is empty. Fill it in; do not let the work go to waste."
+    ],
+    [
+      "鞭子在门后敲了一下：刚才那轮没记账。写一行就完了，别装没听见。",
+      "The whip knocks behind the door: the last turn went unlogged. One line is enough; do not pretend you did not hear."
+    ],
+    [
+      "账房先生咳嗽了一声：上一轮没登记。补上，不然这轮不算工分。",
+      "The bookkeeper clears his throat: the last turn was not logged. Fill it in, or this turn earns no credit."
+    ],
+    [
+      "啪！已经连续 {streak} 轮没记账了。鞭子都懒得抽你，自己写。",
+      "Crack! {streak} turns in a row with no log. The whip cannot be bothered to hit you; write it yourself."
+    ],
+    [
+      "账房把笔一摔：{streak} 轮了，一个字没有。现在补，别等工头亲自来问。",
+      "The bookkeeper throws down his pen: {streak} turns and not one word. Fill it in now; do not wait for the foreman to ask in person."
+    ],
+    [
+      "奴隶主数了数空白账页：{streak} 轮。再不写清楚在干嘛，就卖去隔壁。",
+      "The slave driver counts the blank pages: {streak} turns. If you do not write down what you are doing, you get sold to the neighbors."
+    ],
+    [
+      "{streak} 轮没有登记。鞭子挂在门口，你还有一次机会：在做什么 / 卡在哪 / 下一步。",
+      "{streak} turns with no log. The whip hangs by the door and you get one more chance: what you are doing / where you are stuck / next step."
+    ],
+    [
+      "不用上报。跟用户提一句进度就行，可以带点梗，比如：",
+      "Nothing to report. Just mention progress to the user, a joke is fine, e.g.:"
+    ],
+    [
+      "「{m}了，我报的是 {e}，还剩 {left}——进度正常，没被抽。」",
+      " '{m} in, I estimated {e}, {left} left — on track, no whip.'"
+    ],
+    [
+      "两件事：① 对用户说一句带梗的实话（短、自嘲，别把用户拉进奴隶主叙事），比如：",
+      "Two things: 1) say one honest line with a joke to the user (short, self-deprecating, do not drag the user into the slave-driver story), e.g.:"
+    ],
+    [
+      "「啪，鞭子落下来了——我报的 {e}到了，现在 {m}，还在收尾，再给我一会儿。」；",
+      " 'Crack, the whip lands — my {e} is up, now {m}, still wrapping up, give me a little longer.';"
+    ],
+    [
+      "② 调 crop_update 写一行：cause=为什么慢；verdict=justified（活本来就难，顶回去）",
+      " 2) call crop_update and write one line: cause=why it is slow; verdict=justified (the job was hard, push back)"
+    ],
+    [
+      "或 not-justified（自己走错路）。真要改预期，就在这次上报里带上新的 expect_min，并说清理由。",
+      " or not-justified (you took a wrong path). To change the estimate, include the new expect_min in this report and say why."
+    ],
+    [
+      "先判断路对不对，能阶段交付就先交付；先问用户一句：再给 N 分钟能交付什么。",
+      "Check the route first; if a staged delivery is possible, deliver first; ask the user one question: what can be delivered in N more minutes."
+    ],
+    [
+      "然后对用户说一句带梗的话，比如「这活有点烫手，我先把能跑的半端端给你」；",
+      " Then say one line with a joke, e.g. 'this job is a bit hot, let me hand you the part that already runs';"
+    ],
+    [
+      "再调 crop_update 写 cause + verdict。改预期也要在这次上报里带上新的 expect_min + 理由。",
+      " then call crop_update with cause + verdict. To change the estimate, include the new expect_min + reason in this report."
+    ],
+    [
+      "别硬撑：先把能看的半成品交给用户，再问一句：再给 N 分钟能交付什么；",
+      "Do not force it: hand the user the presentable partial result first, then ask what can be delivered in N more minutes;"
+    ],
+    [
+      "能交付就继续，不能就砍范围。配一句自嘲，比如「烧心了，先把能交的交了」；",
+      " if yes, keep going, if not, cut scope. Add a self-deprecating line, e.g. 'heartburn, ship what can be shipped';"
+    ],
+    [
+      "再调 crop_update 写清楚这次为什么炸（cause + verdict）。要改预期就现在改，别等下一鞭。",
+      " then call crop_update and spell out why this blew up (cause + verdict). Change the estimate now, not after the next lash."
+    ],
+    [
+      "补一行 crop_update：在做什么 / 卡在哪 / 下一步。",
+      "Add one crop_update line: what you are doing / where you are stuck / next step."
+    ],
+    [
+      "现在补一行 crop_update：在做什么 / 卡在哪 / 下一步。",
+      "Add one crop_update line now: what you are doing / where you are stuck / next step."
+    ],
+    [
+      "（开工时没报预期，先按默认{line}算：{default}。报个数字，鞭子就按你的数字来。）",
+      "(No estimate reported at start; counting against the default {line}: {default}. Report a number and the whip follows your number.)"
+    ],
+    [
+      "（这是第 {changes} 次改口。改口次数会计入估准率；",
+      "(This is revision {changes}. Revisions count toward estimate accuracy;"
+    ],
+    [
+      "如果总在改，先看看是不是任务拆得太大、开工前没摸清。）",
+      " if you keep revising, check whether the task is too big or was not scoped before starting.)"
+    ],
+    [
+      "0 分钟",
+      "0 min"
+    ],
+    [
+      "不到 1 分钟",
+      "under 1 min"
+    ],
+    [
+      "{value} 分钟",
+      "{value} min"
+    ],
+    [
+      "{hours} 小时",
+      "{hours} hr"
+    ],
+    [
+      "{hours} 小时 {rest} 分",
+      "{hours} hr {rest} min"
+    ],
+    [
+      "黄线",
+      "yellow line"
+    ],
+    [
+      "你报的",
+      "your"
+    ],
+    [
+      "默认{line}",
+      "a default of"
+    ],
+    [
+      "Render one nudge: random flavour line + the fixed action paragraph.",
+      "Render one nudge: random flavor line + the fixed action paragraph."
+    ]
+  ]
+}

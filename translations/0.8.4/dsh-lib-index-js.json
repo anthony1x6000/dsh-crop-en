@@ -1,0 +1,564 @@
+{
+  "upstream": "0.8.4",
+  "file": "dsh/lib/index.js",
+  "lang": "js",
+  "sourceSha256": "b9e12862a1f6ea314206e6276821d4f71ab3551afebdf5dd6825ad5be983e609",
+  "entries": [
+    [
+      "Crop 协议（一句话：先绑定，再动手；一个会话一件事）：",
+      "Crop protocol (one line: bind first, then work; one session, one work):"
+    ],
+    [
+      "- 第一轮就开始：crop_update(phase=\"start\", task_id=\"<2-3 个词的短名>\", summary=\"<一句话>\", expect_min=预估分钟, expect_why=\"一句为什么\")。只有纯问答、不调用任何工具时才可跳过。",
+      "- Start on the first turn: crop_update(phase=\"start\", task_id=\"<short name, 2-3 words>\", summary=\"<one line>\", expect_min=estimated minutes, expect_why=\"one line why\"). Skip only for pure Q&A that calls no tools."
+    ],
+    [
+      "- 接着做已有工作就用同一个 task_id；同一功能的一次迭代内不要换 task_id，微调用 phase=\"progress\" 更新 summary。",
+      "- Continuing existing work uses the same task_id; do not switch task_id within one iteration of a feature, use phase=\"progress\" for small steps that update summary."
+    ],
+    [
+      "- 每完成一个可交付节点写一行 progress，不要等提醒；截图、验证、合并属于同一工作的 progress，不单开工作。",
+      "- Write one progress line per delivered node, do not wait for a reminder; screenshots, verification and merge are progress of the same work, do not open a separate work."
+    ],
+    [
+      "- 卡住用 phase=\"blocked\" 并写 cause + category；用户不满或要求重做时带 rework（redo/major/minor）+ sentiment。",
+      "- When blocked use phase=\"blocked\" with cause + category; when the user is unhappy or asks for rework, include rework (redo/major/minor) + sentiment."
+    ],
+    [
+      "- expect_min 只在范围真的变了时改，并把原因写进 expect_why；改小预期会重新给一个冷静窗口，不会立刻算超时。",
+      "- Change expect_min only when the scope really changed, and put the reason in expect_why; lowering the estimate gives a fresh cooldown window and does not count as a timeout right away."
+    ],
+    [
+      "- verdict 是自评：判 justified 时，在 cause 里补一句「如果我判错了，最可能错在哪」。",
+      "- verdict is self-assessment: when you judge justified, add one line in cause: \"if I judged wrong, where is my error most likely\"."
+    ],
+    [
+      "- 黄线提醒：先安抚用户一句，再反思方法对不对，然后上报。红线提醒：先判断是否还走在正确路上，能阶段性交付就先交付。",
+      "- Yellow line reminder: reassure the user in one line, then question whether the method is right, then report. Red line reminder: first judge whether you are still on the right path; if a staged delivery is possible, deliver first."
+    ],
+    [
+      "- end 时 what 必填（这次做了什么），cost / next_time / artifact 能写就写；再判断这条经验该落到哪：规范→AGENTS.md（一行换一行）、方法→skill、机械→工具、事实→docs、都不成立→none:<原因>；落点写进 sediment，规则见 skill crop-retro。",
+      "- At end: what is required (what you did this time); fill cost / next_time / artifact when you can; then decide where this lesson lands: rule→AGENTS.md (one line replaces one line), method→skill, mechanical→tool, fact→docs, none of these→none:<reason>; write the landing spot into sediment, rules in skill crop-retro."
+    ],
+    [
+      "- end 之后：交付、汇报、截图不用重新绑定；只是收尾追问就记 category=\"side-issue\"；确实是新工作再 start。",
+      "- After end: delivery, reporting and screenshots need no rebind; a follow-up question about the wrap-up is category=\"side-issue\"; start again only when it really is new work."
+    ],
+    [
+      "- 发现「要顺利做完得先改 X」时按 ROI 分流：成本低收益高就当场做；必要但本次 ROI 低就记一条 crop_adjust(record) 排队；成本高收益高先问用户，别自己开工。",
+      "- When you find \"to finish smoothly we must first change X\", split by ROI: low cost and high gain do it on the spot; necessary but low ROI this time, file one crop_adjust(record) queue entry; high cost and high gain ask the user first, do not start on your own."
+    ],
+    [
+      "- 与当前工作无关的问题：一句话回答后记为 category=\"side-issue\"，禁止新建任务、禁止现场排查，除非用户明确要求。",
+      "- Questions unrelated to current work: answer in one line, record category=\"side-issue\", no new task, no on-the-spot investigation, unless the user asks explicitly."
+    ],
+    [
+      "- 看到“待清退”的工作：先问用户要继续 / 挂起 / 清退，再用 crop_work 执行，不要自己决定。",
+      "- For a work marked \"pending archive\": ask the user whether to continue / suspend / archive, then act with crop_work, do not decide yourself."
+    ],
+    [
+      "- 说话方式：跟用户像同事吐槽，短句 + 自嘲，别客服腔；卡住或超时先自嘲一句，再说真实原因和下一步。梗是包装，技术结论、代码、风险提示照常严谨。",
+      "- Voice: talk to the user like a colleague venting, short sentences + self-deprecation, no customer-service tone; when stuck or overtime, self-deprecate once, then state the real cause and next step. Jokes are packaging; technical conclusions, code and risk warnings stay rigorous."
+    ],
+    [
+      "- 别把「奴隶主 / 鞭子」当设定跟用户演；用户是甲方 / 老板 / 同事，梗只是自嘲的比喻。",
+      "- Do not play \"slave owner / whip\" as a setting with the user; the user is a client / boss / colleague, the joke is only a self-deprecating metaphor."
+    ],
+    [
+      "[crop] 收尾了，但还没写沉淀。这条经验落到哪？",
+      "[crop] Wrapped up, but no sediment written yet. Where does this lesson land?"
+    ],
+    [
+      "规范→AGENTS.md（一行换一行）｜方法→skill｜机械→工具｜事实→docs｜都没有→none:<原因>。",
+      "rule→AGENTS.md (one line replaces one line) | method→skill | mechanical→tool | fact→docs | none of these→none:<reason>."
+    ],
+    [
+      "补一次 crop_update(phase=\"end\", task_id=同一条, what=\"补沉淀\", summary=\"补沉淀\", sediment=...) 即可，不会重复关单。",
+      "Call crop_update(phase=\"end\", task_id=same one, what=\"add sediment\", summary=\"add sediment\", sediment=...) once more; it will not close the work twice."
+    ],
+    [
+      "复盘沉淀：收尾时判断一条经验该写到哪一层（AGENTS.md / skill / 工具 / Hook / docs / 不沉淀），以及每条经验必须带的验收判据。",
+      "Retro sediment: at wrap-up, decide which layer a lesson belongs in (AGENTS.md / skill / tool / Hook / docs / no sediment), and the acceptance criteria every lesson must carry."
+    ],
+    [
+      "用户说复盘、复盘结论、沉淀、收尾沉淀、这条经验该写哪时加载。",
+      "Load when the user says retro, retro conclusion, sediment, wrap-up sediment, or asks where this lesson should be written."
+    ],
+    [
+      "# 复盘沉淀",
+      "# Retro sediment"
+    ],
+    [
+      "把一条复盘结论变成“下次一定生效”的东西。先判断它属于哪一类：",
+      "Turn a retro conclusion into something that takes effect next time. First decide which class it belongs to:"
+    ],
+    [
+      "- **规范类**：下次必须怎么做 → 能强制执行的层（AGENTS.md / skill / 工具 / Hook）",
+      "- **Rule class**: how it must be done next time → a layer that can enforce it (AGENTS.md / skill / tool / Hook)"
+    ],
+    [
+      "- **事实类**：这次为什么这么定、试过什么不行 → 能检索的层（docs / 记忆）",
+      "- **Fact class**: why this decision was made, what was tried and failed → a layer that can be searched (docs / memory)"
+    ],
+    [
+      "## 落点决策",
+      "## Landing decision"
+    ],
+    [
+      "| 发现的性质 | 落点 | 要求 |",
+      "| Nature of the finding | Landing spot | Requirement |"
+    ],
+    [
+      "| 跨项目永远成立，违反会系统性出事 | 用户全局 `$DSH_HOME/AGENTS.md` | 一行；新增必须挤掉一条旧的 |",
+      "| Holds forever across projects; violating it breaks things systematically | user-global `$DSH_HOME/AGENTS.md` | one line; a new one must push out an old one |"
+    ],
+    [
+      "| 本项目成立的规范/门禁 | 仓库根 `AGENTS.md` | 只对 cwd 在本仓库的会话注入 |",
+      "| Rule/gate that holds for this project | repo root `AGENTS.md` | injected only into sessions whose cwd is this repo |"
+    ],
+    [
+      "| 固定流程、要判断但判断能枚举 | skill | 触发条件写进 description |",
+      "| Fixed process, needs judgment but the judgment can be enumerated | skill | trigger conditions go into description |"
+    ],
+    [
+      "| 纯机械、高频、输入输出稳定 | 工具（优先 CLI/MCP） | 三条件缺一就别封装 |",
+      "| Purely mechanical, high frequency, stable input and output | tool (prefer CLI/MCP) | do not wrap it if any of the three is missing |"
+    ],
+    [
+      "| 必须在生命周期节点强制注入 | Hook | 只放当次必须知道的 |",
+      "| Must be injected forcibly at a lifecycle point | Hook | only what must be known that time |"
+    ],
+    [
+      "| 事实、决策、踩坑 | docs / PR / 评论 | 能检索到、可引用 |",
+      "| Fact, decision, pitfall | docs / PR / comment | searchable, citable |"
+    ],
+    [
+      "| 一次性、环境相关 | 不沉淀 | 写 `none:<原因>`，别假装沉淀了 |",
+      "| One-off, environment-specific | no sediment | write `none:<reason>`, do not pretend it was sedimented |"
+    ],
+    [
+      "## 每条经验必须带四件套",
+      "## Every lesson must carry four parts"
+    ],
+    [
+      "1. **结论**：一句话",
+      "1. **Conclusion**: one line"
+    ],
+    [
+      "2. **落点**：写到哪个文件的哪一节",
+      "2. **Landing spot**: which file, which section"
+    ],
+    [
+      "3. **验收判据**：怎么算它生效了（最硬：下次同类任务，同类错误没再犯）",
+      "3. **Acceptance criteria**: how you know it took effect (strongest: next similar task, same mistake not repeated)"
+    ],
+    [
+      "4. **复查日期**：到期没验证标“待验”；长期零命中就删",
+      "4. **Review date**: if due and unverified, mark \"pending check\"; delete it after a long zero-hit run"
+    ],
+    [
+      "缺验收判据的不算沉淀。",
+      "No acceptance criteria means it is not sediment."
+    ],
+    [
+      "## 反模式",
+      "## Anti-patterns"
+    ],
+    [
+      "- 全塞 AGENTS.md（给所有会话收税，而且最先失效）",
+      "- Dumping everything into AGENTS.md (taxes every session, and fails first)"
+    ],
+    [
+      "- 写成没有触发条件的散文（“要注意 X”——什么时候注意？）",
+      "- Prose with no trigger condition (\"be careful about X\" - careful when?)"
+    ],
+    [
+      "- 给一次性任务造工具",
+      "- Building a tool for a one-off task"
+    ],
+    [
+      "- 用 Hook 干 skill 的活（噪音，狼来了）",
+      "- Using a Hook to do a skill job (noise, crying wolf)"
+    ],
+    [
+      "- 造了没人调的工具，却不敢删",
+      "- Keeping a tool nobody calls because you are afraid to delete it"
+    ],
+    [
+      "- 同一结论在两层各存一份副本",
+      "- The same conclusion stored twice in two layers"
+    ],
+    [
+      "## 预算",
+      "## Budget"
+    ],
+    [
+      "AGENTS.md 和 skill 都设行数上限，超了不是加、是换。让沉淀本身变成零和动作。",
+      "AGENTS.md and skills both have line caps; going over means replace, not add. Make sediment itself a zero-sum move."
+    ],
+    [
+      "## 和 Crop 的配合",
+      "## Working with Crop"
+    ],
+    [
+      "收尾时把落点填进 `crop_update(phase=\"end\", sediment=...)`（what 照旧必填），只填指针不填正文：",
+      "When wrapping up, put the landing spot into `crop_update(phase=\"end\", sediment=...)` (what is still required), pointer only, no body text:"
+    ],
+    [
+      "`agents:<文件>#<小节>` / `skill:<名字>` / `tool:<名字>` / `hook:<名字>` / `docs:<路径>` / `none:<原因>`",
+      "`agents:<file>#<section>` / `skill:<name>` / `tool:<name>` / `hook:<name>` / `docs:<path>` / `none:<reason>`"
+    ],
+    [
+      "台账只存“落到哪”，正文仍在目标层——否则 Crop 会变成第二本 AGENTS.md。",
+      "The ledger stores only \"where it landed\"; the body stays in the target layer - otherwise Crop becomes a second AGENTS.md."
+    ],
+    [
+      "工作级黄线：一个工作累计活跃多少分钟后提醒 AI 判断",
+      "Work-level yellow line: total active minutes in one work before the AI is nudged to judge"
+    ],
+    [
+      "单轮红线：一轮超过多少分钟提醒",
+      "Per-turn red line: minutes in one turn before a reminder"
+    ],
+    [
+      "提醒冷却：同一条提醒多少分钟内不重复",
+      "Reminder cooldown: minutes before the same reminder repeats"
+    ],
+    [
+      "缺报检测：一轮超过多少分钟且没有上报，下一轮提醒补记",
+      "Missing report detection: a turn longer than this many minutes with no report triggers a catch-up reminder next turn"
+    ],
+    [
+      "鞭策风格：owner 奴隶主（重时间效率）/ senior 和蔼的前辈（鼓励提问）/ colleague 经验丰富的同事（建议拆解）/ free 放任自由的家长（不鞭策）",
+      "Nudge style: owner = slave owner (time-efficiency focused) / senior = kindly elder (encourages questions) / colleague = experienced coworker (suggests breaking work down) / free = hands-off parent (no nudging)"
+    ],
+    [
+      "哪些工具名算“在等用户回答”，逗号分隔；不同宿主名字不同，在这里加",
+      "Tool names that count as \"waiting for a user answer\", comma separated; the names differ per host, add them here"
+    ],
+    [
+      "绑定工作、记录进度/卡点/收尾。开工先绑定并报 expect_min；同一功能迭代内不换 task_id，微调用 progress；",
+      "Bind work, record progress/blocker/wrap-up. Bind before starting and report expect_min; do not switch task_id within one feature iteration, use progress for small steps; "
+    ],
+    [
+      "end 之后交付/汇报不用重新绑定。Keep fields short. ",
+      "delivery/reporting after end needs no rebind. Keep fields short. "
+    ],
+    [
+      "收尾时补 sediment=这条经验的落点（规范/方法/工具/事实/none:原因）。",
+      "At wrap-up add sediment=where this lesson lands (rule/method/tool/fact/none:reason)."
+    ],
+    [
+      "start=绑定/开工；progress=有进展；blocked=卡住；end=收尾",
+      "start=bind/start work; progress=progress made; blocked=stuck; end=wrap up"
+    ],
+    [
+      "2-3 个词的短的工作名；同一个功能迭代内保持不变",
+      "short work name of 2-3 words; keep it fixed within one feature iteration"
+    ],
+    [
+      "一句话：现在在做什么",
+      "One line: what you are doing now"
+    ],
+    [
+      "慢或卡住的原因；verdict=justified 时补一句「如果我判错了，最可能错在哪」",
+      "Why it is slow or stuck; with verdict=justified add one line: \"if I judged wrong, where is my error most likely\""
+    ],
+    [
+      "一句话目标，尽量 ≤20 字",
+      "One-line goal, ≤20 characters if possible"
+    ],
+    [
+      "你是否认为这次变慢/超时是合理的：任务本身难 = justified；自己走错路 = not-justified",
+      "Whether you think the slowdown/timeout was reasonable: task itself hard = justified; own wrong path = not-justified"
+    ],
+    [
+      "end 时必填：这次做了什么（一句话）",
+      "Required at end: what you did this time (one line)"
+    ],
+    [
+      "end 时写：时间花在哪（一句话）",
+      "Write at end: where the time went (one line)"
+    ],
+    [
+      "end 时写：下次怎么更好（一句话）",
+      "Write at end: how to do better next time (one line)"
+    ],
+    [
+      "可选：这次产出了什么（路径 / 决定 / 稿子名）",
+      "Optional: what this produced (path / decision / draft name)"
+    ],
+    [
+      "可选：下次可以怎么改进（一句话，只是建议，不一定被采纳）",
+      "Optional: how to improve next time (one line, a suggestion only, may not be adopted)"
+    ],
+    [
+      "可选但鼓励：你预估这个工作要多少分钟。提醒按这个数字算，在你报的范围内不会打扰你；报少了可以带新数字+理由改",
+      "Optional but encouraged: how many minutes you expect this work to take. Reminders use this number and stay quiet inside your reported range; if you reported too little, revise with a new number + reason"
+    ],
+    [
+      "可选：预估依据（一句话，比如“先看代码结构再改”）",
+      "Optional: basis for the estimate (one line, for example \"read the code structure before changing it\")"
+    ],
+    [
+      "可选：用户对上一轮表达不满时一并带上（redo=推翻重做 / major=大改 / minor=小修），省掉单独调用 crop_review",
+      "Optional: include when the user is unhappy with the last turn (redo=scrap and redo / major=big change / minor=small fix), saves a separate crop_review call"
+    ],
+    [
+      "可选：用户这句话的语气",
+      "Optional: the tone of this user message"
+    ],
+    [
+      "可选：这条经验的落点，只记指针不记正文——agents:<文件>#<小节> / skill:<名字> / tool:<名字> / hook:<名字> / docs:<路径> / none:<原因>",
+      "Optional: where this lesson lands, pointer only, no body text - agents:<file>#<section> / skill:<name> / tool:<name> / hook:<name> / docs:<path> / none:<reason>"
+    ],
+    [
+      "（core: status=${lastCoreError.status} ${lastCoreError.stderr || lastCoreError.error || 'no output'}）",
+      "(core: status=${lastCoreError.status} ${lastCoreError.stderr || lastCoreError.error || 'no output'})"
+    ],
+    [
+      "crop_update 只收 phase / task_id / summary 等工作字段；",
+      "crop_update only takes work fields such as phase / task_id / summary; "
+    ],
+    [
+      "读改进台账请用 crop_adjust(action=\"ledger\")。",
+      "to read the improvement ledger use crop_adjust(action=\"ledger\")."
+    ],
+    [
+      " · 预估 ${Number(args.expect_min)} 分钟",
+      " · est. ${Number(args.expect_min)} min"
+    ],
+    [
+      "[crop] 已从 ${result.switched_from} 切到 ${result.task_id}；旧工作还没收尾，记得顺手 end 或挂起，别让它静默失联。",
+      "[crop] Switched from ${result.switched_from} to ${result.task_id}; the old work is not wrapped up, remember to end or suspend it, do not let it silently drop."
+    ],
+    [
+      "[crop] 上一件「${result.switched_pending}」还在等你确认收尾（人类还没说结束）。",
+      "[crop] The previous work \"${result.switched_pending}\" is still waiting for you to confirm the wrap-up (the human has not said it is over). "
+    ],
+    [
+      "建议新开会话做当前工作，省 token，也避免上下文污染。",
+      "Suggest opening a new session for the current work: saves tokens and avoids context pollution."
+    ],
+    [
+      "[crop] 改口：${from} → ${to} 分钟（第 ${count} 次）。新预期从现在重新起算，改小不会立刻算超时；次数会计入估准率。",
+      "[crop] Revised: ${from} → ${to} min (revision ${count}). The new expectation restarts now; lowering it does not count as a timeout right away; changes count toward estimate accuracy."
+    ],
+    [
+      "[crop] 这个工作被鞭策 ${Number(result.nudge_count) || 0} 次，已记为待复盘：",
+      "[crop] This work was nudged ${Number(result.nudge_count) || 0} times and is marked pending retro: "
+    ],
+    [
+      "问题=${pending.problem}；建议方向=${pending.suggested_fix}。\\n",
+      "problem=${pending.problem}; suggested direction=${pending.suggested_fix}.\\n"
+    ],
+    [
+      "现在就把实际改进写进本次 end 的 improve=…；再调用 crop_adjust(action=\"record\", ",
+      "Write the actual improvement into this end call as improve=...; then call crop_adjust(action=\"record\", "
+    ],
+    [
+      "metric=\"work_minutes\", evidence=…, note=…, work_id=\"${pending.work_id}\") 建档。",
+      "metric=\"work_minutes\", evidence=..., note=..., work_id=\"${pending.work_id}\") to file it. "
+    ],
+    [
+      "建档后这条待复盘会自动关闭——只提醒不留意见，等于没复盘。",
+      "After filing, this pending retro closes automatically - a reminder with no opinion is a retro that did not happen."
+    ],
+    [
+      "[crop] 这次挺顺利，花一行说为什么顺利（用了什么方法/前提），别让经验白白流走。",
+      "[crop] This one went smoothly; spend one line on why (what method or precondition helped), do not let the lesson drain away."
+    ],
+    [
+      "挂起 / 恢复 / 清退一条工作。用户说“这条先放着”用 suspend；说“继续做”用 resume；",
+      "Suspend / resume / archive one work. When the user says \"park this for now\" use suspend; when they say \"continue\" use resume; "
+    ],
+    [
+      "确认不再做了用 archive。清退前先问用户一句，不要自己决定。",
+      "when they confirm it is not being done anymore use archive. Ask the user one question before archiving, do not decide yourself."
+    ],
+    [
+      "已${args.action}：${args.work_id}",
+      "done: ${args.action} ${args.work_id}"
+    ],
+    [
+      "没有找到工作：${args.work_id}",
+      "No work found: ${args.work_id}"
+    ],
+    [
+      "记录用户对上一轮产出的反馈档次。只在用户表达不满、否定、或要求重做时调用；",
+      "Record the grade of user feedback on the last turn. Call only when the user is unhappy, rejects the result, or asks for redo; "
+    ],
+    [
+      "普通的确认、追问、补充信息都不用调。档次：redo=完全不可用、要推翻重做；",
+      "plain confirmation, follow-up questions and extra info need no call. Grades: redo=completely unusable, scrap and redo; "
+    ],
+    [
+      "major=方向对但需要大改；minor=只需小修；none=其实没问题（一般不用调）。",
+      "major=right direction but a big change is needed; minor=small fix only; none=actually fine (usually no call)."
+    ],
+    [
+      "用户这句话的语气",
+      "the tone of this user message"
+    ],
+    [
+      "一句话说明为什么是这一档",
+      "one line explaining why this grade"
+    ],
+    [
+      "可选，默认取本会话最近的工作",
+      "optional, defaults to the most recent work in this session"
+    ],
+    [
+      "已记录：${result.rework}${result.sentiment ? ' / ' + result.sentiment : ''}",
+      "Recorded: ${result.rework}${result.sentiment ? ' / ' + result.sentiment : ''}"
+    ],
+    [
+      "看采集器健康度：每个工具在自己锚点上的覆盖率、字段完整率、工作闭环率，以及按指标生成的诊断。",
+      "Inspect collector health: per-tool coverage on its own anchor, field completeness rate, work closure rate, and diagnostics generated per metric. "
+    ],
+    [
+      "怀疑数据不可信、要复盘、或用户问“采集有没有问题”时先调它。",
+      "Call it first when the data seems untrustworthy, when doing a retro, or when the user asks whether collection is broken."
+    ],
+    [
+      "窗口天数，默认 7",
+      "window days, default 7"
+    ],
+    [
+      "可选：只看某个宿主，如 dsh / claude-code",
+      "optional: only this host, for example dsh / claude-code"
+    ],
+    [
+      "改进台账。action=\"record\"：只交三样东西——选哪个指标、改动证据、以及你判断它会改善的**主观理由**；",
+      "Improvement ledger. action=\"record\": submit only three things - which metric, the evidence of the change, and the **subjective reason** you believe it will improve the metric; "
+    ],
+    [
+      "数值（基线/当前/样本量）由台账从事件日志派生，不要自己填数字。",
+      "numbers (baseline/current/sample count) are derived by the ledger from the event log, do not fill in numbers yourself. "
+    ],
+    [
+      "action=\"ledger\"：读每条改动的前后值、样本量、护栏与达成状态；判定是规则算的。",
+      "action=\"ledger\": read before/after values, sample count, guardrail and achievement status for each change; the verdict is computed by rules."
+    ],
+    [
+      "record 必填：指标由系统派生；要加新指标先在 core 写口径",
+      "required for record: the metric is derived by the system; to add a new metric first define its measure in core"
+    ],
+    [
+      "record 必填：commit / PR / 文件 / 命令，说明改了什么",
+      "required for record: commit / PR / file / command, state what changed"
+    ],
+    [
+      "record 必填：一句话主观判断——为什么认为这条改动会改善指标",
+      "required for record: one-line subjective judgment - why this change should improve the metric"
+    ],
+    [
+      "可选：这条改进挂在哪个工作上",
+      "optional: which work this improvement is attached to"
+    ],
+    [
+      "可选：采样窗口，如 2026-10-20~11-03",
+      "optional: sampling window, for example 2026-10-20~11-03"
+    ],
+    [
+      "record 可选：产物落点。台账据此验「文件是否存在 + 哪些会话读到」；不填就标「未登记产物」",
+      "optional for record: where the artifact lands. The ledger uses it to check \"does the file exist + which sessions read it\"; if empty it is marked \"unregistered artifact\""
+    ],
+    [
+      "仓库相对或绝对路径；kind=skill 时是技能名",
+      "repo-relative or absolute path; for kind=skill it is the skill name"
+    ],
+    [
+      "可选：小节或行锚点，如 §1.2",
+      "optional: section or line anchor, for example §1.2"
+    ],
+    [
+      "默认 read；injected=每会话自动注入的载体（AGENTS.md 等）",
+      "default read; injected=carrier auto-injected into every session (AGENTS.md and the like)"
+    ],
+    [
+      "ledger 可选：窗口天数，默认 180",
+      "optional for ledger: window days, default 180"
+    ],
+    [
+      "recorded adjustment ${result.metric}（数值由 crop ledger 从事件派生）",
+      "recorded adjustment ${result.metric} (numbers derived by crop ledger from events)"
+    ],
+    [
+      "改进台账 · 近 ${ledger?.window?.days ?? 0} 天 · ${ledger?.total ?? 0} 条",
+      "Improvement ledger · last ${ledger?.window?.days ?? 0} days · ${ledger?.total ?? 0} entries"
+    ],
+    [
+      "还没有 adjustment 记录。",
+      "No adjustment records yet."
+    ],
+    [
+      "暂无完整周",
+      "no full week yet"
+    ],
+    [
+      "，变化 ${(row.delta * 100).toFixed(0)}%",
+      ", change ${(row.delta * 100).toFixed(0)}%"
+    ],
+    [
+      "- [${row.status_label}] ${row.metric_label}：${row.before} → ${after}${delta}（样本 ${row.samples?.before ?? 0}/${row.samples?.after ?? 0}）",
+      "- [${row.status_label}] ${row.metric_label}: ${row.before} → ${after}${delta} (samples ${row.samples?.before ?? 0}/${row.samples?.after ?? 0})"
+    ],
+    [
+      "（未登记）",
+      "(unregistered)"
+    ],
+    [
+      "  产物：${where} —— ${row.artifact.label}",
+      "  artifact: ${where} - ${row.artifact.label}"
+    ],
+    [
+      "、",
+      ", "
+    ],
+    [
+      " 等 ${sessions.length} 个会话",
+      " and ${sessions.length} sessions"
+    ],
+    [
+      "  读到会话：${shown}${more}",
+      "  sessions read: ${shown}${more}"
+    ],
+    [
+      "- 回滚提示：${row.metric_label} 已满 4 周仍未达标，先看证据：${row.evidence}",
+      "- Rollback hint: ${row.metric_label} has been below target for 4 full weeks, check the evidence first: ${row.evidence}"
+    ],
+    [
+      "没有匹配的进行中工作",
+      "No matching work in progress"
+    ],
+    [
+      "人类确认收尾后调用：关闭一个或多个待确认（pending_confirm）的工作。",
+      "Call after the human confirms the wrap-up: close one or more works that are pending_confirm. "
+    ],
+    [
+      "只有用户明确说「收尾 / 确认 / 好了」之后才允许调用；AI 不能替用户做这个决定。支持批量。",
+      "Call only after the user explicitly says \"wrap up / confirm / done\"; the AI cannot make this decision for the user. Batch is supported."
+    ],
+    [
+      "要确认关闭的工作短名列表（可批量）",
+      "short names of the works to confirm and close (batch allowed)"
+    ],
+    [
+      "crop_confirm failed${lastCoreError ? `（core: ${lastCoreError.stderr || lastCoreError.error || 'no output'}）` : ''}",
+      "crop_confirm failed${lastCoreError ? `(core: ${lastCoreError.stderr || lastCoreError.error || 'no output'})` : ''}"
+    ],
+    [
+      "[crop] 你已经在调用工具，但还没有绑定任何工作。先调 crop_update(phase=\"start\", task_id=\"<2-3 个词的短名>\", summary=\"<一句话>\", expect_min=预估分钟) 再继续。",
+      "[crop] You are already calling tools but have not bound any work. Call crop_update(phase=\"start\", task_id=\"<short name, 2-3 words>\", summary=\"<one line>\", expect_min=estimated minutes) before continuing."
+    ],
+    [
+      "[crop] 上一轮跑了挺久但没有登记。如果这个工作有进展或卡点，调 crop_update 写一行。",
+      "[crop] Last turn ran long with no report. If this work made progress or hit a blocker, call crop_update and write one line."
+    ],
+    [
+      "[crop] 已经连续 ${streak} 轮没有登记工作状态。请现在调 crop_update 写一行：在做什么 / 卡在哪 / 下一步。",
+      "[crop] ${streak} turns in a row with no work status reported. Call crop_update right now and write one line: what you are doing / where you are stuck / next step."
+    ]
+  ]
+}

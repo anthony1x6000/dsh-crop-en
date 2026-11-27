@@ -1,0 +1,20 @@
+dsh-crop-en — English overlay for Agent Crop
+
+Copyright (c) 2026 anthony1x6000
+MIT License (see LICENSE)
+
+Third-party notices
+-------------------
+
+Test fixture: test/fixtures/agent-crop-0.8.4/ is a copy of the published
+agent-crop-dsh package (source files only, no image assets).
+
+  Agent Crop
+  Copyright (c) oriliz
+  https://github.com/oriliz/agent-crop
+  Licensed under the MIT License.
+
+The fixture exists only so the translation gate can prove that the dictionary
+in translations/ reproduces the translated sources exactly. The shipped
+plugin does not redistribute or re-execute that copy; it patches the
+agent-crop-dsh package the user already installed in their DSH profile.

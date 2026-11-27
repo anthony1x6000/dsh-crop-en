@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Agent Crop English overlay">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#1c2330"/>
+  <path d="M14 46c7-3 11-9 13-16 2-6 6-11 12-13" fill="none" stroke="#e6c35c" stroke-width="3.4" stroke-linecap="round"/>
+  <circle cx="47" cy="15" r="3.4" fill="#e6c35c"/>
+  <path d="M33 47h6M30 53h12" stroke="#8fa3c8" stroke-width="2.6" stroke-linecap="round"/>
+  <text x="34" y="44" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="700" fill="#f2f6ff" text-anchor="middle">EN</text>
+</svg>

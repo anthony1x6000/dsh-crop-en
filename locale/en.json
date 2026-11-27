@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Agent Crop English",
+    "description": "Translates the agent-crop plugin's Web panel, model-facing tool text and CLI output into English.",
+    "detail": "docs/DETAIL.md"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "upstream": "0.8.4",
+  "file": "core/probe_core_cli.py",
+  "lang": "py",
+  "sourceSha256": "ed0f620ff9269409b7ffd56f33c5f8ed62e011ed361146c3998c99a5f2fbd499",
+  "entries": [
+    [
+      "[crop] 未完成的工作：本会话 {{mine}} 条 / 其他会话 {{others}} 条。最近活跃的是：\n{{candidates}}\n先选一条，再动手：接着做用 crop_update(phase=\"start\", task_id=\"{{example_task_id}}\")；新开用 2-3 个词的短名。",
+      "[crop] Open work: {{mine}} in this session / {{others}} in other sessions. Most recently active:\n{{candidates}}\nPick one before acting: to continue, call crop_update(phase=\"start\", task_id=\"{{example_task_id}}\"); to start fresh, use a short 2-3 word name."
+    ],
+    [
+      "[crop] 你已经在调用工具，但还没有绑定任何工作。先调 crop_update(phase=\"start\", task_id=\"<2-3 个词的短名>\", summary=\"<一句话>\", expect_min=预估分钟) 再继续，这样这段时间才有归属；顺手报个预期时长，鞭子就按你的数字算。",
+      "[crop] You are already calling tools but have not bound any work. Call crop_update(phase=\"start\", task_id=\"<short 2-3 word name>\", summary=\"<one sentence>\", expect_min=estimated minutes) before continuing, so this time has an owner; also give an estimate and the whip follows your number."
+    ]
+  ]
+}

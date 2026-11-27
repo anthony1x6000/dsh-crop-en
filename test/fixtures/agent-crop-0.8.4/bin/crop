@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+"""crop — Agent Crop CLI.
+
+Reads the local event store and prints what the probe already knows.
+Zero dependencies; every command only reads files under the data directory.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+import time
+
+ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "core"))
+
+import probe_core as core  # noqa: E402
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(prog="crop", description="Agent Crop CLI")
+    sub = parser.add_subparsers(dest="command")
+
+    status = sub.add_parser("status", help="现在在干什么：当前块、今日事件、进行中的工作")
+    status.add_argument("--json", action="store_true", help="输出 JSON")
+    status.add_argument("--workspace", default=None, help="只看这个工作区的工作")
+
+    side = sub.add_parser("side", help="记一条支线（不改当前工作，不打断对话）")
+    side.add_argument("note")
+    side.add_argument("--suggest", default="later", choices=["later", "new-session", "ignore"])
+
+    switch = sub.add_parser("switch", help="把当前会话的焦点切到一条工作（不改状态）")
+    switch.add_argument("work_id")
+
+    suspend = sub.add_parser("suspend", help="把一条工作挂起（保留在册）")
+    suspend.add_argument("work_id")
+
+    resume = sub.add_parser("resume", help="恢复挂起的工作")
+    resume.add_argument("work_id")
+
+    archive = sub.add_parser("archive", help="归档一条工作（不删除，可恢复）")
+    archive.add_argument("work_id")
+
+    gc = sub.add_parser("gc", help="把挂起超期的工作归档")
+    gc.add_argument("--days", type=float, default=14.0)
+
+    report = sub.add_parser("report", help="周期复盘（事实层，文字版交给 Agent）")
+    report.add_argument("--days", type=float, default=7.0)
+    report.add_argument("--json", action="store_true")
+
+    adjust = sub.add_parser("adjust", help="记一条采纳的改进（数值由台账派生，只收证据和主观判断）")
+    adjust.add_argument("--metric", required=True,
+                        choices=["work_minutes", "reminder_per_turn", "report_latency_min", "unowned_tool_share"],
+                        help="指标由系统从事件派生；要加新指标先在 core 写口径")
+    adjust.add_argument("--evidence", required=True, help="commit / PR / 文件 / 命令，说明改了什么")
+    adjust.add_argument("--note", required=True, help="一句话主观判断：为什么认为它会改善指标")
+    adjust.add_argument("--work-id", default="", help="这条改进挂在哪个工作上（可选）")
+    adjust.add_argument("--window", default="", help="采样窗口说明，如 2026-10-20~11-03")
+    adjust.add_argument("--artifact", default="",
+                        help="产物落点：kind:path#anchor（kind=file/skill/hook），如 file:docs/FOO.md#§1")
+    adjust.add_argument("--delivery", default="read", choices=["read", "injected"],
+                        help="read=按需读取（默认）；injected=每会话自动注入的载体（如 AGENTS.md）")
+
+    ledger = sub.add_parser("ledger", help="改进台账：前后值、样本量、护栏、回滚提示")
+    ledger.add_argument("--days", type=float, default=180.0)
+    ledger.add_argument("--json", action="store_true")
+
+    health = sub.add_parser("health", help="按采集工具看健康度（覆盖/完整/闭环/诊断）")
+    health.add_argument("--days", type=float, default=7.0)
+    health.add_argument("--host", default=None, help="只看某个宿主，如 dsh / claude-code")
+    health.add_argument("--json", action="store_true", help="输出 JSON（给 AI / 脚本）")
+
+    preview = sub.add_parser("preview", help="预览当前注入模板的渲染结果（示例变量）")
+
+    nudges = sub.add_parser("nudges", help="最近注入的鞭策：策略/档位/来源/全文")
+    nudges.add_argument("--limit", type=int, default=10)
+    nudges.add_argument("--json", action="store_true")
+
+    serve = sub.add_parser("serve", help="本地 dashboard")
+    serve.add_argument("--host", default="127.0.0.1")
+    serve.add_argument("--port", type=int, default=8765)
+
+    args = parser.parse_args(argv)
+
+    if args.command in (None, "status"):
+        summary = core.status_summary(getattr(args, "workspace", None))
+        if getattr(args, "json", False):
+            print(json.dumps(summary, ensure_ascii=False, indent=2))
+        else:
+            print(core.format_status(summary))
+        return 0
+
+    if args.command == "preview":
+        print(core.preview_injections())
+        return 0
+
+    if args.command == "nudges":
+        rows = [event for event in core.load_events() if event.get("ev") == "nudge"]
+        rows = rows[-int(args.limit or 10):]
+        if getattr(args, "json", False):
+            print(json.dumps(rows, ensure_ascii=False, indent=2))
+            return 0
+        if not rows:
+            print("还没有记录过鞭策注入。")
+            return 0
+        for row in rows:
+            stamp = time.strftime("%m-%d %H:%M", time.localtime(int(row.get("t") or 0) / 1000))
+            print(f"- {stamp} [{row.get('strategy')}/{row.get('tier')}] {row.get('source')}"
+                  f" · {row.get('work_id') or '-'}")
+            for line in str(row.get("text") or "").splitlines():
+                print(f"    {line}")
+        return 0
+
+    if args.command == "side":
+        print("noted" if core.record_side_issue(args.note, args.suggest) else "empty")
+        return 0
+    if args.command == "switch":
+        sid = (core.read_runtime() or {}).get("sid") or ""
+        print("switched" if core.switch_claim(args.work_id, sid) else "not found")
+        return 0
+    if args.command == "suspend":
+        print("suspended" if core.set_work_state(args.work_id, "suspended") else "not found")
+        return 0
+    if args.command == "resume":
+        print("resumed" if core.set_work_state(args.work_id, "open") else "not found")
+        return 0
+    if args.command == "archive":
+        print("archived" if core.archive_work(args.work_id) else "not found")
+        return 0
+    if args.command == "report":
+        summary = core.period_summary(args.days)
+        ledger = core.improvement_ledger()
+        if getattr(args, "json", False):
+            summary["adjustments"] = core.load_adjustments(20)
+            summary["ledger"] = ledger
+            print(json.dumps(summary, ensure_ascii=False, indent=2))
+        else:
+            print(core.format_report(summary))
+            if ledger.get("rows"):
+                print()
+                print(core.format_ledger(ledger))
+        return 0
+
+    if args.command == "adjust":
+        sid = (core.read_runtime() or {}).get("sid") or "cli"
+        artifact = None
+        if args.artifact:
+            kind, sep, rest = args.artifact.partition(":")
+            if not sep or kind not in core.ARTIFACT_KINDS:
+                kind, rest = "file", args.artifact
+            path, _, anchor = rest.partition("#")
+            artifact = {"kind": kind, "path": path, "anchor": anchor, "delivery": args.delivery}
+        try:
+            event = core.record_adjustment({
+                "metric": args.metric, "evidence": args.evidence, "work_id": args.work_id,
+                "window": args.window, "note": args.note, "artifact": artifact,
+            }, {"sid": sid, "workspace": os.getcwd()})
+        except ValueError as exc:
+            print(f"error: {exc}")
+            return 2
+        print(f"recorded adjustment {event['metric']}（数值由 crop ledger 从事件派生）")
+        return 0
+
+    if args.command == "ledger":
+        ledger = core.improvement_ledger(args.days)
+        if getattr(args, "json", False):
+            print(json.dumps(ledger, ensure_ascii=False, indent=2))
+        else:
+            print(core.format_ledger(ledger))
+        return 0
+
+    if args.command == "health":
+        summary = core.health_summary(args.days, host_filter=args.host)
+        if getattr(args, "json", False):
+            print(json.dumps(summary, ensure_ascii=False, indent=2))
+        else:
+            print(core.format_health(summary))
+        return 0
+
+    if args.command == "serve":
+        from crop_serve import serve  # noqa: PLC0415
+        serve(args.host, args.port)
+        return 0
+
+    if args.command == "gc":
+        archived = core.archive_stale(args.days)
+        print(f"archived {len(archived)}" + (": " + ", ".join(archived) if archived else ""))
+        return 0
+
+    parser.print_help()
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())
